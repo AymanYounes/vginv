@@ -1,0 +1,103 @@
+
+        .switch {
+            display: inline-block;
+            height: 25px;
+            display: inline-flex;
+            align-items: center;
+          }
+          .switch * {
+            user-select: none;
+          }
+          .switch.secondary input[type="checkbox"]:checked ~ .lever {
+            background-size: 100% 100%;
+            background-image: linear-gradient(#0bd175, #0bd175);
+          }
+          .switch.secondary .lever {
+            background-color: #f1342f;
+            background-image: linear-gradient(#0bd175, #0bd175);
+          }
+          .switch.secondary .lever:before {
+            content: "" !important;
+          }
+          .switch input[type="checkbox"] {
+            display: none;
+          }
+          .switch input[type="checkbox"]:checked ~ .lever {
+            background-size: 100% 100%;
+            background-image: linear-gradient(#00AEEF, #00AEEF);
+          }
+          .switch input[type="checkbox"]:checked ~ .lever:before {
+            content: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 47 36"><path fill="#fff" d="M0 20.02l15.52 15.51 30.5-30.7L41.19 0 15.52 25.88 4.83 15.19z"/></svg>');
+            position: absolute;
+            margin-top: 1px;
+            left: 7px;
+          }
+          .switch input[type="checkbox"]:checked ~ .lever:after {
+            left: calc(100% - 22px);
+          }
+          .switch input[type="checkbox"]:checked ~ .lever:active:after {
+            margin-left: -5px;
+          }
+          .switch input[type="checkbox"]:disabled ~ .lever {
+            cursor: not-allowed;
+            background: #e6e7e8;
+          }
+          .switch input[type="checkbox"]:disabled ~ .lever:before {
+            content: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><path fill="#5D6168" d="M9.41.27a.94.94 0 0 0-1.32 0L4.84 3.52 1.6.27a.95.95 0 0 0-1.33 0 .95.95 0 0 0 0 1.33l3.25 3.24L.27 8.09A.94.94 0 1 0 1.6 9.41l3.24-3.24 3.25 3.24a.9.9 0 0 0 .66.28.9.9 0 0 0 .66-.28.92.92 0 0 0 0-1.32L6.17 4.84 9.41 1.6a.94.94 0 0 0 0-1.33"/></svg>');
+          }
+          .switch input[type="checkbox"]:disabled ~ .lever:after {
+            margin-left: 0 !important;
+            transform: none;
+            box-shadow: none;
+          }
+          .switch .state-value {
+            text-transform: uppercase;
+            padding-right: 10px;
+            font-size: 14px;
+            color: #53565a;
+            line-height: 24px;
+          }
+          .switch .lever {
+            content: "";
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            height: 24px;
+            width: 48px;
+            background-color: #a4b5c7;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-position: center left;
+            background-repeat: no-repeat;
+            background-size: 0 100%;
+            background-image: linear-gradient(#00AEEF, #00AEEF);
+          }
+          .switch .lever:before {
+            content: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><path fill="#fff" d="M9.41.27a.94.94 0 0 0-1.32 0L4.84 3.52 1.6.27a.95.95 0 0 0-1.33 0 .95.95 0 0 0 0 1.33l3.25 3.24L.27 8.09A.94.94 0 1 0 1.6 9.41l3.24-3.24 3.25 3.24a.9.9 0 0 0 .66.28.9.9 0 0 0 .66-.28.92.92 0 0 0 0-1.32L6.17 4.84 9.41 1.6a.94.94 0 0 0 0-1.33"/></svg>');
+            position: absolute;
+            left: inherit;
+            right: 10px;
+          }
+          .switch .lever:after {
+            content: "";
+            position: absolute;
+            left: 2px;
+            height: 20px;
+            width: 20px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+          }
+          .switch .lever:active:after {
+            width: 25px;
+          }
+          .switch + .switch {
+            margin-left: 10px;
+          }
+          
+          [dir="rtl"] .switch .state-value {
+            padding-left: 5px;
+            padding-right: 0;
+          }

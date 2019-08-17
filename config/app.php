@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' =>'vg',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,11 +161,12 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        
         /*
-         * Package Service Providers...
-         */
-
+        * Package Service Providers...
+        */
+        Yoeunes\Toastr\ToastrServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -225,7 +226,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Zipper' => Chumper\Zipper\Zipper::class
     ],
 
 ];

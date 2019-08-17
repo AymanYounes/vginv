@@ -1,0 +1,126 @@
+ /* chat */
+ .chat {
+    background: #fbfbfb;
+}
+.chat .item {
+    display: flex;
+    align-items: center;
+}
+.chat .item>.content {
+    flex: 1;
+}
+.chat .item .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 0;
+    border-bottom: 2px solid #f9f9f9;
+}
+.chat .item .top .headline {
+    display: flex;
+    align-items: center;
+}
+.chat .item .top img {
+    width: 42px;
+    height: 42px;
+    border-radius: 100%;
+    margin-right: 15px;
+}
+.chat .item .top h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.chat .item .top span {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    color: #bdbac2;
+}
+.chat .item .top ul {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 0;
+}
+.chat .item .top ul>li .eva {
+    width: 28px;
+    height: 28px;
+    fill: #bdbac2;
+    transition: all 0.3s;
+}
+.eva-animation {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+ .sent ul>li img {
+    width: 42px;
+    height: 42px;
+    border-radius: 100%;
+    margin-left: 15px;
+    -ms-flex-order: 2;
+    order: 2;
+}
+ul li {
+    list-style: none;
+}
+.sent ul>li .bubble {
+    display: inline-block;
+    max-width: 360px;
+    background: #f5f5f5;
+    color: #bdbac2;
+    text-align: left;
+    border-radius: 6px;
+}
+.sent ul>li .bubble2 {
+    display: inline-block;
+    max-width: 360px;
+    background: #007bff;
+    text-align: left;
+    color: #fff;
+    /* text-align: left; */
+    border-radius: 6px;
+}
+.recever{
+    float: right
+}
+.chat .item .bottom {
+    padding: 30px 0;
+    border-top: 2px solid #f9f9f9;
+}
+.chat .item .bottom .form-control {
+    padding: 15.5px 50px 15.5px 20px;
+    height: 55px;
+    resize: none;
+}
+.form-controls {
+    background: #f5f5f5;
+    color: #bdbac2;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 6px;
+}
+.chat .item .bottom .prepend {
+    padding: 0 15px;
+    left: auto;
+    right: 0;
+}
+.chat .item .bottom .prepend .eva {
+    fill: #bdbac2;
+}
+.prepend {
+    position: absolute;
+    padding: 0 0 0 15px;
+    /* top: 0; */
+    bottom: 43px;
+    /* left: 0; */
+    margin-right: 4%;
+    line-height: 0;
+    margin-bottom: 0!important;
+    background-color: transparent
+}
