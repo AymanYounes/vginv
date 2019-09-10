@@ -1,7 +1,7 @@
 @extends('layout.master')
 @section('styles')
 {{-- <link rel="stylesheet" href="/app/public/css/style.css">--}}
-<link rel="stylesheet" href="{{URL::asset('/css/media/home.css')}}"> 
+<link rel="stylesheet" href="{{secure_asset('/css/media/home.css')}}"> 
 <style>
   .proposed {
     height: 350px;
@@ -14,6 +14,7 @@
     height: 400px;
   }
 </style>
+
 <!-- poll -->
 <style>
 .li-edits {
@@ -98,13 +99,71 @@ li.correct .inputs[type=radio]:checked + .labels:before {
     
 
 <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  data-backdrop="static" data-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h5 class="modal-title font-weight-bold " id="exampleModalLongTitle">INVEST </h5>
+    
+        </div>
+        <div class="modal-body">
+          <form id="investForm">
+            @csrf
+            <input type="hidden" id="project_id" name="project_id"> 
+            <div class="container">
+              <div class="row">
+                <div class="col-md-2 col-sm-2">
+                  <div class="circule">
+
+                    <p style="background-color: transparent; margin-top:10px
+                    border: none;"> <i class="fas fa-minus text-white icon-contact"></i></p></div>
+                </div>
+
+                <div class="col-md-8 col-sm-8">
+                  <div class="form-group">
+
+                    <input type="number" class="form-control border-input" name="amount" id="exampleInputEmail1" aria-describedby="emailHelp"
+                      placeholder="your invest">
+
+                  </div>
+                  <p class="alert alert-success done" style="display:none">Your Request sent successfully.</p>
+                  <p class="alert alert-warning exists" style="display:none">You are aleardy invested in this project.</p>
+                  <p class="alert alert-danger error" style="display:none">Something went wrong,please try again.</p>
+                </div>
+                <div class="col-md-2 col-sm-2">
+                  <div class="circule ">
+
+                    <p style="background-color: transparent;margin-top:10px
+                    border: none;"> <i class="fas fa-plus text-white icon-contact"></i></p></div>
+                </div>
+              </div>
+            </div>
+      
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+        <button type="button" id="invest" class="btn btn-primary" style="    width: 100%;
+        border-radius: 31px;
+    ">NEXT </button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+  <!-- end invest -->
+
+<!-- Modal -->
 
 <div class="modal fade text-white" id="exampleModal" tabindex="-1" role="dialog"
-aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; background-color: rgba(241, 240, 242, 100%);">
+aria-labelledby="exampleModalLabel" aria-hidden="true"  data-backdrop="static"  data-keyboard="false" style="width:100%; background-color: rgba(241, 240, 242, 100%);">
 <div class="modal-dialog" role="document">
     <div class="modal-content" style="">
         <div class="modal-header">
-          <img src="{{URL::asset('/img/e8025d7e05c8f3c49d06eee747b4a794-1920x400-c-center-min.jpg')}}" alt="" width="100%">
+          <img src="{{asset('/img/e8025d7e05c8f3c49d06eee747b4a794-1920x400-c-center-min.jpg')}}" alt="" width="100%">
        
             <!-- <button type="button" class="close " data-dismiss="modal" aria-label="Close">
                 <span class="font-weight-bold" aria-hidden="true" style="columns: #000000;">Close &times;</span>
@@ -112,8 +171,11 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
         </div>
         <div class="modal-body">
             <h5 class="modal-title " id="exampleModalLabel">
-                   
-                <p class="text-center text-dark talk">@lang('main.addProject')</p>
+              @if (session("type")=="vg")
+                  <p class="text-center text-dark talk">@lang('main.addProject')</p>
+              @else
+                  <p class="text-center text-dark talk">@lang('main.addDeal')</p>                  
+              @endif
     
 </h5>
             <form method="POST" action="{{URL::asset('/user/add/project')}}" enctype="multipart/form-data">
@@ -143,10 +205,10 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
                     <div class="form-group">
                             <div class="input-group mb-3">
                                 <div class="custom-file">
-                                  <input type="file" class="custom-file-input" multiple required name="study" id="inputGroupFile02">
-                                  <label class="custom-file-label " for="inputGroupFile02">@lang('main.labels.study')</label>
+                                  <input type="file" class="custom-file-input" multiple required name="studies[]" id="inputGroupFile03">
+                                  <label class="custom-file-label " for="inputGroupFile03">@lang('main.labels.study')</label>
                                 </div>
-                                @error('study')
+                                @error('studies')
                                    <span class="error" role="alert">
                                        <strong>{{ $message }}</strong>
                                    </span>
@@ -182,7 +244,7 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
                             </div>
                             <div class="form-group bottom-m">
                                 <label for="recipient-name" class="col-form-label text-dark">@lang('main.labels.projectCountry') </label>
-                                <select id="inputState" name="country" required required class="form-control country border-inbut @error('country') is-invalid @enderror" name="country" value="{{ old('country') }}">
+                                <select id="inputState" name="country" required class="form-control country border-inbut @error('country') is-invalid @enderror" value="{{ old('country') }}">
                                     <option selected>Country</option>
                                 </select>
                                 @error('country')
@@ -193,7 +255,7 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
                             </div>
                             <div class="form-group bottom-m" >
                                 <label for="recipient-name" class="col-form-label text-dark">@lang('main.labels.projectCity') </label>
-                                <select id="inputState" required name="city" required class="form-control city border-inbut @error('city') is-invalid @enderror" name="city" value="{{ old('city') }}">
+                                <select id="inputState" required name="city" class="form-control city border-inbut @error('city') is-invalid @enderror" value="{{ old('city') }}">
                                   <option selected>City</option>
                                 </select>
                                 @error('city')
@@ -246,8 +308,10 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
 
 <section>
     <div class="container">
+      <!-- Poll !-->
       @if (count($poll)>0)
         <div class="row mt-3 pt-4">
+          <h4 style="margin:15px">{{$poll[0]->question}}</h4>
             <div class="col-md-12 col-sm-12">
               <div>
                 @error("answer")
@@ -255,14 +319,14 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
                       <strong>{{ $message }}</strong>
                   </span>
                 @enderror
-                <form action="/poll/{{$poll[0]->question_id}}/answer" method="POST">
+                <form action="{{URL::asset('/poll/'.$poll[0]->question_id.'/answer')}}" method="POST">
                   @csrf
                   @foreach ($poll as $i=>$p)   
-                    <li class="li-edits"><span class="perc-back" style="width: @if(isset($pollVotes[$i])){{$pollVotes[$i]->count/$pollVotes[$i]->total*100}}% @else 0% @endif"></span>
+                    <li class="li-edits"><span class="perc-back" style="width: @if(isset($pollVotes[$i]) && $pollVotes[$i]->answer_id == $p->id){{$pollVotes[$i]->count/$pollVotes[$i]->total*100}}% @else 0% @endif"></span>
                       <input class="inputs" type="radio" name="answer" id="answer{{$p->id}}" value="{{$p->id}}">
-                      <label class="labels" for="answer{{$p->id}}">{{$p->answer}}</label>
+                      <label class="labels" style="line-height:22px" for="answer{{$p->id}}">{{$p->answer}}</label>
                       <span class="perc-number">
-                        @if(isset($pollVotes[$i]))
+                        @if(isset($pollVotes[$i]) && $pollVotes[$i]->answer_id == $p->id)
                           {{number_format((float)$pollVotes[$i]->count/$pollVotes[$i]->total*100, 2, '.', '')}}%
                         @else
                           0%
@@ -278,6 +342,7 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
       @endif
 
       <div class="row">
+        @if(count($proposed) > 0)
         <div class="col-md-12 col-sm-12 mt-3">
           <div class="title" style=" display: inline-block;">
             <h3 class="text-dark ">
@@ -286,41 +351,23 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
           </div>
           {{--  <a class="slide__text-link text-dark mb-3" href="#" style="float: right;">View All</a>  --}}
         </div>
-        @foreach ($invests as $invest)
+        @foreach ($proposed as $prop)
                
             <div class="col-md-4 col-sm-4 col-xs-4 col-lg-4 w-col">
-              <div class="card text-white proposed card-sug">
-                <img class="card-img" src="{{URL::asset($invest->image)}}" alt="Card image" width="100%">
-                <div class="card-img-overlay padd">
-
-                  <div class=" add-cir">
-                    <a href="">
-                      <i class="fas fa-plus text-white icon-contact icon-contact-add"></i>
-                    </a>
+                <a href="{{URL::asset('/projects/'.$prop->id)}}">
+                  <div class="card text-white proposed card-sug">
+                    <img class="card-img" src="{{asset($prop->image)}}" alt="Card image" width="100%">
+                    <div class="card-img-overlay padd">
+                    </div>
+                    <div class="card-body" style="    padding: 5px;">
+                      <h5 class="card-title text-dark media-h5">{{$prop->title}}</h5>
+                      <p class="card-text  media-p" style="  color: gray;">{{$prop->description}} </p>
+                    </div>
                   </div>
-                  {{--  <div class="users-thumb-list">
-                    <a href="#" title="" data-toggle="tooltip" data-original-title="Anderw">
-                      <img src="/app/public/img/friend-avatar8.jpg" alt="">
-                    </a>
-                    <a href="#" title="" data-toggle="tooltip" data-original-title="frank">
-                      <img src="/app/public/img/friend-avatar2.jpg" alt="">
-                    </a>
-                    <a href="#" title="" data-toggle="tooltip" data-original-title="Sara">
-                      <img src="/app/public/img/friend-avatar3.jpg" alt="">
-                    </a>
-                    <a href="#" title="" data-toggle="tooltip" data-original-title="Amy">
-                      <img src="/app/public/img/friend-avatar4.jpg" alt="">
-                    </a>
-                  </div>  --}}
-                </div>
-                <div class="card-body" style="    padding: 5px;">
-                  <h5 class="card-title text-dark media-h5">{{$invest->title}}</h5>
-                  <p class="card-text  media-p" style="  color: gray;">{{$invest->description}} </p>
-                </div>
-              </div>
+                </a>
             </div>
         @endforeach
-
+        @endif
       </div>
     </div>
   </section>
@@ -329,7 +376,11 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
     <div class="row mt-3">
       <div class="col-md-6 col-sm-12 offset-md-3 mt-3 ">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primaryed  p-3" data-toggle="modal" data-target="#exampleModal">@lang('main.addProject')</button>
+        @if (session("type")=="vg")
+            <button type="button" class="btn btn-primaryed  p-3" data-toggle="modal" data-target="#exampleModal">@lang('main.addProject')</button>
+        @else
+            <button type="button" class="btn btn-primaryed  p-3" data-toggle="modal" data-target="#exampleModal">@lang('main.addDeal')</button>            
+        @endif
 
       </div>
     </div>
@@ -354,14 +405,14 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
               @foreach ($posts as $post)
                   
                 <div class="carousel-item col-md-4 active">
-                  <a href="">
+                <a href="{{URL::asset('/posts/'.$post->id)}}">
                     <div class="card">
 
                       <div class="card-img-overlay fonts">
                         <p class="card-text pedit">{{$post->title}}</p>
 
                       </div>
-                      <img class="card-img-top img-fluid" src="http://www.vginv.com/vg-admin/public{{$post->image}}"
+                      <img class="card-img-top img-fluid" src="https://www.vginv.com/vg-admin/public{{$post->image}}"
                         alt="Card image cap">
 
                     </div>
@@ -396,7 +447,7 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
               <div class="card-hover ">
                 <a href="{{URL::asset('/projects/'.$project->id)}}">
                   <div class="card proj card-height text-white">
-                    <img class="card-img" src="{{URL::asset($project->image)}}" height="400px" alt="Card image">
+                    <img class="card-img" src="{{asset($project->image)}}" height="400px" alt="Card image">
                     <div class="card-img-overlay fonts project-padd text-center">
                       <h3 class="card-title text-bottom">{{$project->title}} </h3>
                       <p class="card-text font-project-head"> {{$project->description}}</p>
@@ -405,27 +456,38 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
                   </div>
                 </a>
                 <div class="news-post-meta">
-                  <a href="#"><i class="far fa-heart"></i> {{$project->likes}} @lang('main.like')</a>
+                  <a href="#"><i class="far fa-heart"></i> {{$project->likes}}</a>
                   {{--  <a href="#"><i class="fas fa-share-alt"></i>123 share</a>  --}}
 
-                  <a href="#"><i class="far fa-comments"></i> {{$project->comments}} @lang('main.comment')</a>
+                  <a href="#"><i class="far fa-comments"></i> {{$project->comments}}</a>
                 </div>
 
               </div>
             </div>
-            <div class="col-md-12 col-sm-12">
-              <button type="button" class="btn btn-primaryed  p-2" style="width: 20%;    border-radius: 3px;">@lang('main.invest')</button>
-                <button type="button" class="btn btn-primaryed  p-2" style="width: 20%;    float:right;    background-color:  #fff;
-                color: rgba(74, 105, 255,100%); border: 1px solid #ccc">{{$project->investment}}$</button>
-              </div>
+            @if($project->auth != Auth::user()->id)
+                <div class="col-md-12 col-sm-12">
+                @if (session("type")=="vg")
+                  <button type="button" class="btn btn-primaryed  p-2 investModel" title="{{$project->id}}" style="width: 20%;    border-radius: 3px;">@lang('main.invest')</button>
+                @else
+                  <button type="button" class="btn btn-primaryed  p-2 investModel" title="{{$project->id}}" style="width: 20%;    border-radius: 3px;">@lang('main.deal')</button>
+                @endif
+                    <button type="button" class="btn btn-primaryed  p-2" style="width: 20%;    float:right;    background-color:  #fff;
+                    color: rgba(74, 105, 255,100%); border: 1px solid #ccc">{{$project->investment}}$</button>
+                </div>
+            @endif
           @endforeach
       </div>
     </div>
   </section>
 
   @section('script')
+    <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-messaging.js"></script>
   <script>
     $(document).ready(function () {
+    
+
       $("#myCarousel").on("slide.bs.carousel", function (e) {
         var $e = $(e.relatedTarget);
         var idx = $e.index();
@@ -451,6 +513,102 @@ aria-labelledby="exampleModalLabel" aria-hidden="true" style="width:100%; backgr
     });
 
   </script>
+  <script>
+
+
+
+    var firebaseConfig = {
+        apiKey: "AIzaSyB7PCZjvS9pHK18p3ssHuFdskGAHuiil7g",
+        authDomain: "webpush-3733d.firebaseapp.com",
+        databaseURL: "https://webpush-3733d.firebaseio.com",
+        projectId: "webpush-3733d",
+        storageBucket: "webpush-3733d.appspot.com",
+        messagingSenderId: "611471641205",
+        appId: "1:611471641205:web:e3f9a46e9f4087b1"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Retrieve Firebase Messaging object.
+
+    const messaging = firebase.messaging();
+    // Add the public key generated from the console here.
+    // Add the public key generated from the console here.
+    messaging.usePublicVapidKey("BNScm2e-PrYSzWouqr7YcrN2EWfSDG-MSYex_jB0wsMdkvtm4dcAzJOExKrsuzoBrbg_HXrCSWG89Q_jAVOh77A");
+    Notification.requestPermission().then((permission) => {
+        if (permission === 'granted' && !isTokenSentToServer()) gettoken();
+        else console.log('Unable to get permission to notify.');
+
+        // if (permission === 'granted') {
+        //
+        //     if (isTokenSentToServer()) {
+        //
+        //     } else {
+        //         gettoken();
+        //     }
+        // } else {
+        //     console.log('Unable to get permission to notify.');
+        // }
+    });
+
+
+    //get end point from user
+    function gettoken() {
+
+        // Get Instance ID token. Initially this makes a network call, once retrieved
+// subsequent calls to getToken will return from cache.
+        messaging.getToken().then((currentToken) => {
+            if (currentToken) {
+                console.log(currentToken);
+                sndtokentoserver(true);
+                savetoken(currentToken);
+                // sendTokenToServer(currentToken);
+                // updateUIForPushEnabled(currentToken);
+            } else {
+                sndtokentoserver(false);
+                // Show permission request.
+                console.log('No Instance ID token available. Request permission to generate one.');
+                // Show permission UI.
+                // updateUIForPushPermissionRequired();
+                // setTokenSentToServer(false);
+            }
+        }).catch((err) => {
+            console.log('An error occurred while retrieving token. ', err);
+//   showToken('Error retrieving Instance ID token. ', err);
+//   setTokenSentToServer(false);
+        });
+
+    }
+
+    function sndtokentoserver(token) {
+        window.localStorage.setItem('sentToServer', token ? '1' : '0')
+    }
+
+    function isTokenSentToServer() {
+        return window.localStorage.getItem('sentToServer') === '1';
+    }
+
+    function savetoken(token) {
+        $.ajax({
+            url: 'action.php',
+            method: 'post',
+            data: 'tocen=' + token,
+        }).done(function (res) {
+            console.log(res);
+        });
+    }
+
+    messaging.onMessage((payload) => {
+        console.log('Message received. ', payload);
+        // ...
+        title = payload.data.title;
+        option = {
+            body: payload.data.body,
+            icon: payload.data.icon
+        }
+        var notfi = new Notification(title, option);
+    });
+
+</script>
   @endsection
-  <script src="{{URL::asset('/js/ajaxFuns.js')}}"></script>
 @endsection

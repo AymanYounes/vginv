@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('styles')
-    <link rel="stylesheet" href="{{URL::asset('/css/profile.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('/css/profile.css')}}">
     <meta name="city" content="{{Auth::user()->city_id}}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <style>
@@ -88,8 +88,13 @@
                             @endif
                         </div>
                         <div class="form-group " style="margin-bottom: 0rem;">
-                                <select id="inputState" name="country" required class="form-control pro_country country border-inbut">
-                                  <option selected>@lang('main.labels.country')</option>
+                                <select
+                                        id="inputState"
+                                        name="country"
+                                        data-initId="{{$address->country_id}}"
+                                        required
+                                        class="form-control pro_country country border-inbut">
+                                  {{--<option selected>@lang('main.labels.country')</option>--}}
                                 </select>
                                 @if ($errors->has('counrty'))
                                     <span class="error" role="alert">
@@ -100,7 +105,12 @@
 
                         <div class="form-group " style="margin-bottom: 0rem;">
                           
-                            <select id="inputState" name="city" required class="form-control pro_city city border-inbut">
+                            <select
+                                    id="inputState"
+                                    name="city"
+                                    data-initId="{{Auth::user()->city_id}}"
+                                    required
+                                    class="form-control pro_city city border-inbut">
                               <option selected>@lang('main.labels.city')</option>
                             </select>
                             @if ($errors->has('city'))
@@ -113,7 +123,11 @@
                               <label>@lang('main.labels.favs')</label>
                                <select class="selectpicker form-group" name="favs[]" required placeholder="@lang('main.labels.favs').." multiple data-live-search="true">
                                     @foreach ($deps as $dep)
-                                        <option value="{{$dep->id}}">{{$dep->dep_name}}</option>
+                                        @if (session('locale')=="ar")
+                                            <option value="{{$dep->id}}">{{$dep->dep_ar}}</option>
+                                        @else
+                                            <option value="{{$dep->id}}">{{$dep->dep_en}}</option>
+                                        @endif
                                     @endforeach    
                                     
                                 </select>
@@ -133,7 +147,12 @@
                         
                                 <div class="form-group" style="margin-bottom: 0rem;">
                                 
-                                    <textarea class="form-control border-inbut" required name="description" id="exampleFormControlTextarea1" rows="3" placeholder="@lang('main.labels.desc')">{{Auth::user()->description}}</textarea>
+                                    <textarea
+                                            class="form-control border-inbut"
+                                            required name="description"
+                                            id="exampleFormControlTextarea1"
+                                            rows="3"
+                                            placeholder="@lang('main.labels.editProfileDesc')">{{Auth::user()->description}}</textarea>
                                     @if ($errors->has('description'))
                                         <span class="error" role="alert">
                                             <strong>{{ $errors->first('description') }}</strong>
@@ -152,15 +171,17 @@
  </section>
     <!-- end edit profile -->
     @section('scripts')
-        <script src="{{URL::asset('/js/login.js')}}"></script>
-        <script>
-            $(document).ready(function() {
-               $('.selectpicker').select2();
-             $('.selectpicker').val({{$userFavs}});
-             $('.selectpicker').trigger('change');
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="{{asset('/js/login.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.selectpicker').select2();
+            $('.selectpicker').val({{$userFavs}});
+            $('.selectpicker').trigger('change');
 
-            });
-        </script>
-         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+        });
+        
+    </script>
+
     @endsection
 @endsection

@@ -33,10 +33,10 @@
                             <li>
                                 <div class="nearly-pepls">
                                     <figure>
-                                        <a href="#" title=""><img width="70px" height="70px" src="{{URL::asset($friend->image)}}" alt=""></a>
+                                        <a href="{{URL::asset('/user/'.$friend->id.'/profile')}}" title=""><img width="70px" height="70px" src="{{asset($friend->image)}}" alt=""></a>
                                     </figure>
                                     <div class="pepl-info">
-                                        <h4><a href="#" title="" class="font-weight-bold">{{$friend->first_name." ".$friend->last_name}}</a></h4>
+                                        <h4><a href="{{URL::asset('/user/'.$friend->id.'/profile')}}" title="" class="font-weight-bold">{{$friend->first_name." ".$friend->last_name}}</a></h4>
                                         <p>{{$friend->description}}</p>
                         
                                     </div>

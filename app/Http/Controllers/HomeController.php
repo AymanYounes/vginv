@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Auth;
+
 class HomeController extends Controller
 {
+
     /**
      * Create a new controller instance.
      *
@@ -15,6 +17,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        
     }
 
     /**
@@ -25,21 +28,41 @@ class HomeController extends Controller
     public function index()
     {
         
+
+        if(!session('type')){
+            session()->put('type',Auth::user()->type);
+        }
+        $type = session()->get('type');
         $posts = DB::table("posts")->get();
-        $projects = DB::select("SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
+
+        $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
                      WHERE comment_projects.project_id = projects.id) AS comments,
                      (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
-                     FROM projects");
-        $invests = DB::table("invest_projects")
-        ->join('projects' , 'projects.id','=','invest_projects.project_id')
-        ->limit(3)->get();
+                     FROM projects WHERE `approved` = "1" AND `type` = '.'"'.$type.'"');
+//dd($projects);
+        $proposed = DB::select("SELECT * FROM `projects` WHERE `type` ="."'".$type."'"."AND  `dep_id` IN 
+                        (SELECT `department_id` FROM `department_user`
+                         where `user_id`= ".Auth::user()->id.") LIMIT 3");
+
 
         $poll = DB::table('poll_questions') 
                     ->join('poll_question_answers','poll_question_answers.question_id','=','poll_questions.id')
+                    ->where('poll_questions.type',$type)
                     ->where('poll_questions.status',1)->get();
-        $pollVotes = DB::select("SELECT `answer_id` , COUNT(`id`) as count , (SELECT COUNT(`id`) FROM `poll_answers` WHERE `question_id`=1) as total FROM `poll_answers` WHERE `question_id`=1 GROUP BY `answer_id`");
+        if(count($poll) >0){    
+            $pollVotes = DB::select('SELECT `answer_id` , COUNT(`id`) as count , (SELECT COUNT(`id`) FROM `poll_answers` WHERE `question_id`='.'"'. $poll[0]->question_id.'"'.') as total FROM `poll_answers` WHERE `question_id`='.'"'.$poll[0]->question_id.'"'.' GROUP BY `answer_id`');
+        }else {
+            $pollVotes=null;
+        }
         // dd($pollVotes);
-        return view('home',['posts'=>$posts ,'projects'=>$projects,'invests'=>$invests,'poll'=>$poll , 'pollVotes'=>$pollVotes]);
+
+        return view('home', [
+                'posts'=>$posts ,
+                'projects'=>$projects,
+                'proposed'=>$proposed,
+                'poll'=>$poll ,
+                'pollVotes'=>$pollVotes
+            ]);
     }
 
     public function poll(Request $request,$ques_id)
@@ -50,17 +73,18 @@ class HomeController extends Controller
        }
         
         $polled = DB::table('poll_answers')->where(['user_id'=>Auth::user()->id,'question_id'=>$ques_id])->first();
-
         if($polled){
+            // dd($polled);
              $id = DB::table('poll_answers')
                 ->where([
                     'user_id'=>Auth::user()->id,
-                    'question_id'=>$ques_id
+                    'question_id'=>$ques_id,
                 ])
                 ->update([
                     'answer_id'=>$request->answer
                 ]);
-            if($id){
+                if($id){
+                    // dd($id);
                 toastr()->success("Your Answer is Updated Successfully.","Update Poll");
                 return back();
             }

@@ -37,11 +37,11 @@
                             <li>
                                 <div class="nearly-pepls">
                                     <figure>
-                                        <a href='{{URL::asset("/user/$user->id/profile/")}}' title=""><img src="{{URL::asset($user->image)}}" alt=""></a>
+                                        <a href='{{URL::asset("/user/$user->id/profile/")}}' title=""><img src="{{asset($user->image)}}" alt=""></a>
                                     </figure>
                                     <div class="pepl-info">
                                         <h4><a href='{{URL::asset("/user/$user->id/profile/")}}' title="" class="font-weight-bold">{{$user->first_name ." ".$user->last_name}}</a></h4>
-                                        <p>{{$user->description}} </p>
+                                        <p>{{$user->position}} </p>
                         
                                     </div>
                                     <!-- <i class=""></i> -->

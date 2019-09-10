@@ -1,7 +1,8 @@
 @extends('layout.master')
 @section('styles')
-<link rel="stylesheet" href="/css/project.css">
+<link rel="stylesheet" href="{{secure_asset('/css/project.css')}}">
 <style>
+/* Thumbnails */
 
 @media (min-width:0px) and (max-width:321px) {
 .form-wrapper{
@@ -354,6 +355,61 @@ html{
 
 
 @section('content')
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h5 class="modal-title font-weight-bold " id="exampleModalLongTitle">INVEST </h5>
+    
+        </div>
+        <div class="modal-body">
+          <form id="investForm">
+            @csrf
+            <input type="hidden" id="project_id" name="project_id"> 
+            <div class="container">
+              <div class="row">
+                <div class="col-md-2 col-sm-2">
+                  <div class="circule">
+
+                    <p style="background-color: transparent; margin-top:10px
+                    border: none;"> <i class="fas fa-minus text-white icon-contact"></i></p></div>
+                </div>
+
+                <div class="col-md-8 col-sm-8">
+                  <div class="form-group">
+
+                    <input type="number" class="form-control border-input" name="amount" id="exampleInputEmail1" aria-describedby="emailHelp"
+                      placeholder="your invest">
+
+                  </div>
+                  <p class="alert alert-success done" style="display:none">Your Request sent successfully.</p>
+                  <p class="alert alert-warning exists" style="display:none">You are aleardy invested in this project.</p>
+                  <p class="alert alert-danger error" style="display:none">Something went wrong,please try again.</p>
+                </div>
+                <div class="col-md-2 col-sm-2">
+                  <div class="circule ">
+
+                    <p style="background-color: transparent;margin-top:10px
+                    border: none;"> <i class="fas fa-plus text-white icon-contact"></i></p></div>
+                </div>
+              </div>
+            </div>
+      
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+        <button type="button" id="invest" class="btn btn-primary" style="    width: 100%;
+        border-radius: 31px;
+    ">NEXT </button>
+      </div>
+    </div>
+  </div>
+  </div>
 <!-- project -->
 <section>
     <div class="container">
@@ -393,28 +449,43 @@ html{
     <!-- gallary -->
 
     <div class="container gallary-container mb-3">
-        <div class="row">
-
-
+        <div class="row" style="width:60%">
+                
             <ul class="slides col-md-12 col-sm-12">
-                <ul class="thumbnails">
+                @if (count($assets)>0)
                     @foreach ($assets as $i => $asset)
                         @if ($asset->type == 0)
-                            <li id="slide{{$i}}"><img src="{{URL::asset($asset->path)}}" alt="" /></li>
+                            <li id="slide{{$i}}"><img width="100%" src="{{secure_asset($asset->path)}}" alt="" /></li>
                         @endif
                     @endforeach
                 </ul>
+                <ul class="thumbnails">
 
+                    @foreach ($assets as $i => $asset)
+                        @if ($asset->type == 0)
+                            <li>
+                                <a href="#slide{{$i}}"><img src="{{secure_asset($asset->path)}}" alt="" /></a>
+                            </li>
+                        @endif
+                    @endforeach
+                @else
+                    <li id="slide"><img width="100%" src="{{secure_asset($project->image)}}" alt="" /></li>
+                @endif
             </ul>
         </div>
-        <a href="{{URL::asset('/projects/".$project->id."/assets/download')}}"><i class="fas fa-download"></i></a>
     </div>
     <div class="container">
         <div class="row">
+            
             <div class="col-md-12 col-sm-12 mb-3">
-                <a href='{{URL::asset("/projects/$project->id/assets/download")}}'><i class="fas fa-download"></i> @lang('main.download') </a>
-                <button type="button" class="btn  width-media-btn  p-2"
-                    style="width: 20%; float: right;   border-radius: 3px;">@lang('main.invest')</button>
+                <a href='{{secure_asset("/projects/$project->id/assets/download")}}'><i class="fas fa-download"></i> @lang('main.download') </a>
+                    @if($project->auth != Auth::user()->id)
+                    @if (session("type")=="vg")
+                        <button type="button" class="btn btn-primaryed  p-2 investModel" title="{{$project->id}}" style="width: 20%;    border-radius: 3px;">@lang('main.invest')</button>
+                    @else
+                        <button type="button" class="btn btn-primaryed  p-2 investModel" title="{{$project->id}}" style="width: 20%;    border-radius: 3px;">@lang('main.deal')</button>
+                    @endif
+                    @endif
             </div>
             <div class="col-md-12 col-sm-12">
                 <p>
@@ -429,8 +500,8 @@ html{
       
                     <a href="#"><i class="far fa-comments"></i> {{count($comments)}} </a>
                   </div>
-                  <button type="button" class="btn btn-primaryed mt-3  p-2 font-weight-bold" style="width: 20%;    float:right;    background-color:  #fff;
-                  color: rgba(74, 105, 255,100%); border: 1px solid #ccc">@lang('main.invite')</button>
+                  <!-- <button type="button" class="btn btn-primaryed mt-3  p-2 font-weight-bold" style="width: 20%;    float:right;    background-color:  #fff;
+                  color: rgba(74, 105, 255,100%); border: 1px solid #ccc">@lang('main.invite')</button> -->
             </div>
             <!-- comment1 -->
             <div class="col-md-12 col-sm-12 mb-3">
@@ -454,37 +525,31 @@ html{
                     <div class="post-comment">
                         <div class="title mb-3" style=" display: inline-block;">
                             <div class="users-thumb-list" style="margin-top: 5px">
-                                <a href='{{URL::asset("/user/$comment->uid/profile")}}' class="head-project  pl-2  " style="font-size:19px; color: rgba(74, 105, 255,100%)" title="" data-toggle="tooltip"
+                                <a href='{{secure_asset("/user/$comment->uid/profile")}}' class="head-project  pl-2  " style="font-size:19px; color: rgba(74, 105, 255,100%)" title="" data-toggle="tooltip"
                                 data-original-title="Anderw">
-                                <img src="{{URL::asset($comment->uimage)}}" width="50px" height="50px" alt="">
+                                <img src="{{asset($comment->uimage)}}" width="50px" height="50px" alt="">
                                     {{$comment->ufirst." ".$comment->ulast}}
                                 </a>
                             </div>
                             </div>
                                 <div class="we-comment mb-3 mt-3" style="width:10%">
                                 <div class="coment-head">
-                                    {{--  <h5><a href="#" title="">Donald Trump</a></h5>  --}}
                                     <span>{{(new Carbon\Carbon($comment->created_at))->diffForHumans()}}</span>
-                                    {{--  <a class="we-reply" href="#" title="Reply"><i class="fa fa-reply"></i></a>  --}}
                                 </div>
                                 <p>
                                     {{$comment->comment}}
                                 </p>
-                                <div class="news-post-meta">
-                                    <a href="#"><i class="far fa-heart"></i> @lang('main.like')</a>
-                                    {{--  <a href="#"><i class="fa fa-reply"></i> Reply</a>  --}}
-                                    </div>
                             </div> 
                     </div><br>
                 @endforeach
             </div>
 
                     <!-- end comment 2-->
-                    <div class="col-md-12 mb-3 pb-5">
+                    <!-- <div class="col-md-12 mb-3 pb-5">
                         <button type="button" class="btn    p-2"
                         style="width: 100%; color: #fff; background-color: rgb(248, 56, 88);  border-radius: 3px;">@lang('main.report')
                       </button>
-            </div>
+                    </div> -->
         </div>
     </div>
     <!-- end gallary -->
@@ -494,6 +559,27 @@ html{
 
 
 @section('scripts')
+    <script src="{{secure_asset('/js/slippry.min.js')}}"></script>
+    <script>
+        var thumbs = jQuery('#thumbnails').slippry({
+        // general elements & wrapper
+        slippryWrapper: '<div class="slippry_box thumbnails" />',
+        // options
+        transition: 'horizontal',
+        pager: false,
+        auto: false,
+        onSlideBefore: function (el, index_old, index_new) {
+            jQuery('.thumbs a img').removeClass('active');
+            jQuery('img', jQuery('.thumbs a')[index_new]).addClass('active');
+        }
+        });
+
+        jQuery('.thumbs a').click(function () {
+        thumbs.goToSlide($(this).data('slide'));
+        return false;
+        });
+
+    </script>
 @endsection
 @endsection
 

@@ -11,6 +11,52 @@ use App\Notifications\addFriend;
 
 class userController extends Controller
 {
+
+    public function type(){
+        $type = session()->get('type');
+        if($type == "vg"){
+            session()->put('type',"hmg");
+        }else {
+            session()->put('type',"vg");            
+        }
+
+        return redirect('/');
+    }
+
+
+
+    public function getUserAddress(){
+
+        $address = DB::table('countries')
+            ->join('cities','countries.id','=','cities.country_id')
+            ->where('cities.id',Auth::user()->city_id)->first();
+
+
+        return $address;
+    }
+
+
+
+    public function myProfile(){
+        $type = session()->get('type');
+
+        $address = $this->getUserAddress();
+
+        $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
+                     WHERE comment_projects.project_id = projects.id) AS comments,
+                     (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
+                     FROM projects 
+                        INNER JOIN `invest_projects` ON invest_projects.project_id = projects.id
+                      WHERE projects.approved = "1" AND projects.type = '.'"'.$type.'" AND invest_projects.user_id = '.'"'.Auth::user()->id.'"');
+       $total_investments = DB::table('invest_projects')
+                            ->where('user_id',Auth::user()->id)->sum('total_invest');
+       $favs = DB::table('departments')
+                ->join('department_user' , 'departments.id','=','department_user.department_id')
+                ->where('department_user.user_id',Auth::user()->id)
+                ->select('departments.dep_en' , 'departments.dep_ar')->get();
+       return view('users.profile',['address'=>$address,'projects'=>$projects,'favs'=>$favs,'total_investments'=>$total_investments]);
+    }
+
     public function openSettings(){
         return view('users.settings.index');
     }
@@ -74,17 +120,20 @@ class userController extends Controller
     }
 
     public function friends(){
-        $friends = DB::select("select * from `users`
-                     where `users`.id in
-                     (select `f`.user_id from `user_friends` as `f` where `f`.user_friend =".Auth::user()->id.") 
+        $type = session()->get('type');
+        $friends = DB::select('select * from `users`
+                     where `users`.type = '.'"'.$type.'"'.'
+                     AND `users`.id in
+                     (select `f`.user_id from `user_friends` as `f` where `f`.user_friend ='.Auth::user()->id.') 
                      or `users`.id in 
-                     (select `f`.user_friend from `user_friends` as `f` where `f`.user_id =".Auth::user()->id.")" );
+                     (select `f`.user_friend from `user_friends` as `f` where `f`.user_id ='.Auth::user()->id.')' );
         return view('friends.all',['friends'=>$friends]);
     }
 
      public function addFriend($id){
         $check = DB::table('user_friends')->where(['user_id'=>Auth::user()->id ,'user_friend'=>$id ])
                     ->orWhere(['user_id'=>$id],['user_friend'=>Auth::user()->id])
+                    ->where('status',0)
                     ->first();
         if ($check) {
              toastr()->warning('there is a request between you. ',"Add Friend");
@@ -120,7 +169,11 @@ class userController extends Controller
         foreach ($uFavs as $fav) {
             $userFavs[]=$fav->department_id;
         }
-        return view('users.settings.profile.edit',['deps'=>$deps , 'userFavs'=>json_encode($userFavs)]);
+
+
+        $address = $this->getUserAddress();
+
+        return view('users.settings.profile.edit',['address'=>$address ,'deps'=>$deps , 'userFavs'=>json_encode($userFavs)]);
     }
 
     public function updateProfile(Request $request){
@@ -148,8 +201,8 @@ class userController extends Controller
                     $imgUrl     = '/img/avatars/'.$imgName;
              }
         
-        $updated = DB::table('users')->where('id' ,Auth::user()->id)
-        ->update([
+
+        $data = [
             'first_name'    => $request->firstname,
             'last_name'     => $request->lastname,
             'email'         => $request->email,
@@ -159,8 +212,11 @@ class userController extends Controller
             'description'   => $request->description,
             'position'      => $request->position,
             'date_of_barth' => $request->birth,
-            'completed'   => 1,
-            ]);
+            'completed'     => 1,
+        ];
+
+        $updated = DB::table('users')->where('id' ,Auth::user()->id)
+        ->update($data);
             
             if($updated){
                 if(!empty($request->favs)){
@@ -179,7 +235,7 @@ class userController extends Controller
                         }
                     }
             }else {
-                toastr()->error("Something went wrong !" ,'Update Profile');
+                toastr()->info("You don't make any changes !" ,'Update Profile');
                 return back();
             }
         } catch (\Throwable $th) {
@@ -192,18 +248,56 @@ class userController extends Controller
 
 
     public function profile($userId){
-        return view('users.profile');
+        $user = DB::table('users')->where('id', $userId)->first();
+        $type = session()->get('type');
+        $address = DB::table('countries')
+                    ->join('cities','countries.id','=','cities.country_id')
+                    ->where('cities.id',$user->city_id)->first();
+
+        $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
+                     WHERE comment_projects.project_id = projects.id) AS comments,
+                     (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
+                     FROM projects 
+                        INNER JOIN `invest_projects` ON invest_projects.project_id = projects.id
+                      WHERE projects.approved = "1" AND projects.type = '.'"'.$type.'" AND invest_projects.user_id = '.'"'.$userId.'"');
+       
+        $total_investments = DB::table('invest_projects')
+                            ->where('user_id',$userId)->sum('total_invest');
+       
+        $favs = DB::table('departments')
+                ->join('department_user' , 'departments.id','=','department_user.department_id')
+                ->where('department_user.user_id',$userId)
+                ->select('departments.dep_en' , 'departments.dep_ar')->get();
+                
+       return view('users.userProfile',['user'=>$user,'address'=>$address,'projects'=>$projects,'favs'=>$favs,'total_investments'=>$total_investments]);        
+
     }
 
     public function showUsers(){
-        
-        $users = DB::select("SELECT * FROM `users`
-         where `id` NOT IN 
+        $type = session()->get("type");
+        $condition="";
+        if($type == "vg"){
+            $condition ='`type`="vg" OR (`type`="hmg" and `condition`=1)';
+        }else {
+            $condition = '`type`="hmg"';
+        }
+        $users = DB::select('SELECT * FROM `users`
+         where `completed` = 1 and '.$condition.'  
+         AND `id` NOT IN 
          (select `user_friend` from `user_friends`
-          where `user_id`= ".Auth::user()->id ." AND status !=0)
-          and `id` != ".Auth::user()->id);
+          where  `user_id`= '.Auth::user()->id .' AND `status` !=0)
+          and `id` != '.Auth::user()->id);
 
         return view('friends.add',['users'=>$users]);    
+    }
+
+
+    public function condition(){
+        $updated = DB::table('users')->where("id", Auth::user()->id)
+                    ->update(['condition'=>1]);
+        if($updated){
+            return redirect('/type/toggle');
+        }
     }
 
 

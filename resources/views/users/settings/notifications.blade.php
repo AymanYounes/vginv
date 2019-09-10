@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('styles')
-    <link rel="stylesheet" href="{{URL::asset('/css/notifications.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('/css/notifications.css')}}">
 @endsection
 
 

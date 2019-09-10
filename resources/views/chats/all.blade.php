@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('styles')
-<link rel="stylesheet" href="{{URL::asset('/css/media/chats.css')}}">    
+<link rel="stylesheet" href="{{secure_asset('/css/media/chats.css')}}">    
 @endsection
 
 
@@ -26,111 +26,24 @@
                 <div class="tab-content">
                   <div class="tab-pane active fade show" id="frends">
                     <ul class="nearby-contct">
-                    <li>
-                        <div class="nearly-pepls">
-                            <figure>
-                                <a href="#" title=""><img src="{{URL::asset('/img/nearly1.jpg')}}" alt=""></a>
-                            </figure>
-                            <div class="pepl-info">
-                                <h4><a href="#" title="" class="font-weight-bold">jhon kates</a></h4>
-                                <p>ftv It is a long established fact ftv It is a long established fact </p>
-               
-                            </div>
-                            <!-- <i class=""></i> -->
-                            <!-- <div class="circule ml-3">
-                            <a href=""> <i class="fas fa-envelope text-white icon-contact"></i></a>
-                            </div> -->
-                            <span class="ml-3" style="         color: #bdbac2;"> 07:30am</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="nearly-pepls">
-                            <figure>
-                                <a href="#" title=""><img src="{{URL::asset('/img/nearly5.jpg')}}" alt=""></a>
-                            </figure>
-                            <div class="pepl-info">
-                                <h4><a href="#" title="" class="font-weight-bold">jhon kates</a></h4>
-                                <p>ftv It is a long established fact ftv It is a long established fact </p>
-               
-                            </div>
-                            <!-- <i class=""></i> -->
-                            <!-- <div class="circule ml-3">
-                                <a href=""> <i class="fas fa-envelope text-white icon-contact"></i></a>
-                            </div> -->
-                            <span class="ml-3" style="         color: #bdbac2;"> 07:30am</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="nearly-pepls">
-                            <figure>
-                                <a href="#" title=""><img src="{{URL::asset('/img/nearly6.jpg')}}" alt=""></a>
-                            </figure>
-                            <div class="pepl-info">
-                                <h4><a href="#" title="" class="font-weight-bold">jhon kates</a></h4>
-                                <p>ftv It is a long established fact ftv It is a long established fact </p>
-               
-                            </div>
-                            <!-- <i class=""></i> -->
-                            <!-- <div class="circule ml-3">
-                                <a href=""> <i class="fas fa-envelope text-white icon-contact"></i></a>
-                            </div> -->
-                            <span class="ml-3" style="         color: #bdbac2;"> 07:30am</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="nearly-pepls">
-                            <figure>
-                                <a href="#" title=""><img src="{{URL::asset('/img/nearly1.jpg')}}" alt=""></a>
-                            </figure>
-                            <div class="pepl-info">
-                                <h4><a href="#" title="" class="font-weight-bold">jhon kates</a></h4>
-                                <p>ftv It is a long established fact ftv It is a long established fact </p>
-               
-                            </div>
-                            <!-- <i class=""></i> -->
-                            <!-- <div class="circule ml-3">
-                                <a href=""> <i class="fas fa-envelope text-white icon-contact"></i></a>
-                            </div> -->
-                            <span class="ml-3" style="         color: #bdbac2;"> 07:30am</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="nearly-pepls">
-                            <figure>
-                                <a href="#" title=""><img src="{{URL::asset('/img/nearly5.jpg')}}" alt=""></a>
-                            </figure>
-                            <div class="pepl-info">
-                                <h4><a href="#" title="" class="font-weight-bold">jhon kates</a></h4>
-                                <p>ftv It is a long established fact ftv It is a long established fact </p>
-               
-                            </div>
-                            <!-- <i class=""></i> -->
-                            <!-- <div class="circule ml-3">
-                                <a href=""> <i class="fas fa-envelope text-white icon-contact"></i></a>
-                            </div> -->
-                            <span class="ml-3" style="         color: #bdbac2;"> 07:30am</span>
-                        </div>
-                    </li>
-                    <li>
-                    <div class="nearly-pepls">
-                            <figure>
-                                <a href="#" title=""><img src="{{URL::asset('/img/nearly6.jpg')}}" alt=""></a>
-                            </figure>
-                            <div class="pepl-info">
-                                  <h4><a href="#" title=" " class="font-weight-bold">jhon kates</a></h4>
-                                  <p>ftv It is a long established fact ftv It is a long established fact </p>
-                           
-                            </div>
-                            <!-- <i class=""></i> -->
-                            <!-- <div class="circule ml-3">
-                                <a href=""> <i class="fas fa-envelope text-white icon-contact"></i></a>
-                            </div> -->
-                            <span class="ml-3" style="         color: #bdbac2;"> 07:30am</span>
-                        </div>
-                  
-                    </li>
-                  
-                </ul>
+                        @foreach($users as $user)
+                            <li>
+                                <div class="nearly-pepls">
+                                    <figure>
+                                        <a href="{{URL::asset('/user/'.$user->id.'/profile')}}" title=""><img src="{{URL::asset($user->image)}}" alt="" width="70px" height="70px"></a>
+                                    </figure>
+                                    <div class="pepl-info">
+                                        <h4><a href="{{URL::asset('/user/'.$user->id.'/profile')}}" title="" class="font-weight-bold">{{$user->first_name . " ".$user->last_name}}</a></h4>
+                                        <p>{{$user->position}}</p>
+                        
+                                    </div>
+                                    <div class="circule ml-3">
+                                    <a href="{{URL::asset('/user/chats/'.$user->id)}}"> <i class="fas fa-envelope text-white icon-contact"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
                     <div class="lodmore"><button class="btn-view btn-load-more"> <i class="fas fa-redo-alt" style="    color: rgba(74, 105, 255,100%);"></i></button></div>
                   </div>
               

@@ -10,8 +10,8 @@
         integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{URL::asset('/css/login.css')}}">
-    <link rel="stylesheet" href="{{URL::asset('/css/media/login.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('/css/login.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('/css/media/login.css')}}">
     @toastr_css
     <title>VG</title>
 </head>
@@ -27,7 +27,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="col-md-4 offset-md-4 col-sm-12 text-center mt-3">
-                        <a class="navbar-brand" href="index.html"><img src="{{URL::asset('/img/logo.png')}}"
+                        <a class="navbar-brand" href="index.html"><img src="{{asset('/img/logo.png')}}"
                                 class="img-logo" style="height:50px;"></a>
                         <br>
                         <span class="text-dark font-weight-bold mr-3 " style="   font-size: 35px;">VG
@@ -65,7 +65,7 @@
             <div class="container">
                 <div class="row mb-3">
                     <div class="col-md-2 offset-md-5 col-sm-12 text-center mt-3 pt-4">
-                        <a class="navbar-brand" href="index.html"><img src="{{URL::asset('/img/logo.png')}}"
+                        <a class="navbar-brand" href="index.html"><img src="{{asset('/img/logo.png')}}"
                                 class="img-logo" style="height:50px;"></a>
                         <br>
                         <span class="text-white font-weight-bold mr-3 " style="   font-size: 35px;">VG
@@ -78,7 +78,7 @@
                 <div class="row mt-3" id="form-reg">
                     <div class="col-md-4 offset-md-4 col-sm-12">
                         <div class="form-back">
-                            <form method="POST" action="/user/{{$user_id}}/register">
+                            <form method="POST" action="{{URL::asset('/user/'.$user_id.'/register')}}">
                                 @csrf
                                 <div class="form-group bottom-m" >
                                     <input disabled type="email" class="form-control border-inbut @error('email') is-invalid @enderror" name="email" value="{{$email}}" id="exampleInputEmail1"
@@ -114,15 +114,15 @@
 
     </section>
 
-    <script src="{{URL::asset('/js/jq.js')}}"></script>
+    <script src="{{asset('/js/jq.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <script src="{{URL::asset('/js/ajaxFuns.js')}}"></script>
-    <script src="{{URL::asset('/js/login.js')}}"></script>
+    <script src="{{asset('/js/ajaxFuns.js')}}"></script>
+    <script src="{{asset('/js/login.js')}}"></script>
      @toastr_js
     @toastr_render
 </body>

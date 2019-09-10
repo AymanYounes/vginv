@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('styles')
-<link rel="stylesheet" href="{{URL::asset('/css/media/chats.css')}}">  
+<link rel="stylesheet" href="{{secure_asset('/css/media/chats.css')}}">  
 <style>
     .action{
         margin-right: 10px;
@@ -30,22 +30,25 @@
                                 <li>
                                     <div class="nearly-pepls">
                                         <div class="pepl-info">
-                                            <p><strong><a href="/user/{{$not->data['sender']}}/profile">{{$not->data['sender_name']}}</a></strong>
+                                            <p><strong><a href="{{URL::asset('/user/'.$not->data['sender'].'/profile')}}">{{$not->data['sender_name']}}</a></strong>
                                                 Sent you a friend request.
                                             </p>
-                                            <a class="action" href="/request/{{$not->id}}/{{$not->data['sender']}}/confirm">Confirm</a>
-                                            <a class="action" href="/request/{{$not->id}}/{{$not->data['sender']}}/cancel">Cancel</a>
+                                            <a class="action" href="{{URL::asset('/request/'.$not->id.'/'.$not->data['sender'].'/confirm')}}">Confirm</a>
+                                            <a class="action" href="{{URL::asset('/request/'.$not->id.'/'.$not->data['sender'].'/cancel')}}">Cancel</a>
                                         </div>
-                                        <span class="ml-3" style="color: #bdbac2;"> {{date('h:i A',strtotime($not->created_at))}}</span>
+                                        <span class="ml-3" style="color: #bdbac2;"> {{(new Carbon\Carbon($not->created_at))->diffForHumans()}}</span>
                                     </div>
                                 </li>
-                            @else  
+                            
+                            @elseif ($not->type == 'App\Notifications\projectComment')
                                 <li>
                                     <div class="nearly-pepls">
                                         <div class="pepl-info">
-                                            <p>ftv It is a long established fact ftv It is a long established fact </p>
+                                            <p><strong><a href="{{URL::asset('/user/'.$not->data['sender'].'/profile')}}">{{$not->data['sender_name']}}</a></strong>
+                                                <a href="{{URL::asset('/projects/'.$not->data['project_id'])}}" >Add a comment in a project that you invest.</a>
+                                            </p>
                                         </div>
-                                        <span class="ml-3" style="color: #bdbac2;"> 07:30am</span>
+                                        <span class="ml-3" style="color: #bdbac2;"> {{(new Carbon\Carbon($not->created_at))->diffForHumans()}}</span>
                                     </div>
                                 </li>
                             @endif

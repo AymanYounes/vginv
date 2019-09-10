@@ -1,10 +1,13 @@
 
-$(document).ready(function() {   
+$(document).ready(function() {
+
+    var baseURL = $('#baseURL').val();
+
 
     function request( type ,url , data){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                url:url,
+                url:baseURL + url,
                 type:type,
                 data:data
             }).done(function(response){
@@ -13,22 +16,28 @@ $(document).ready(function() {
         })
     }
 
+
+    var countryId = $(".pro_country").attr("data-initId");
+    var cityId = $(".pro_city").attr("data-initId");
+
     request('get','/countries',null)
     .then(res=>{
         $(".country").html('');
         $(".country").append("<option value='' selected>Country</option>");
         res.forEach(country => {
-            $(".country").append('<option value="'+country.id+'">'+country.name+'</option>');
+            $(".country").append('<option value="'+country.id+'" '+ ((countryId == country.id)?"selected":"") +'>'+country.name+'</option>');
         });
     });
+
+    getCities(countryId);
 
     function getCities(country_id){
         request('get','/countries/'+country_id+'/cities',null)
         .then(res=>{
             $(".city").html('');
-        $(".city").append("<option value='' selected>City</option>");
+            $(".city").append("<option value='' selected>City</option>");
             res.forEach(city => {
-                $(".city").append('<option value="'+city.id+'">'+city.city_name+'</option>');
+                $(".city").append('<option value="'+city.id+'" '+((cityId == city.id)?"selected":"")+'>'+city.city_name+'</option>');
             });
         });
     }
@@ -39,9 +48,29 @@ $(document).ready(function() {
 
 
     ////////////// edit Profile ////////////////
-     var cityId = $("meta[name='city']").attr("content");
-        request('get' , '/cities/'+cityId+'/country').then(res=>{
-            $(".pro_country option[value='"+res.country_id+"']").attr("selected" ,true);
-            getCities(res.country_id);
-        });
+
+
+    $(".custom-file-input").on('change',function (e) {
+        var path = this.value;
+        path = path.substring(12, path.length);
+
+        $(this).next('.custom-file-label').html(path);
+    })
+
+
+
+
+
+
+
+
+     // var cityId = $("meta[name='city']").attr("content");
+     //    request('get' , '/cities/'+cityId+'/country').then(res=>{
+     //        $(".pro_country option[value='"+res.country_id+"']").attr("selected" ,true);
+     //        getCities(res.country_id);
+     //
+     //    });
+     //    setTimeout(() => {
+     //        $(".city option[value='"+cityId+"']").attr('selected',true);
+     //    }, 5000);
 })

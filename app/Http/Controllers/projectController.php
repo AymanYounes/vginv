@@ -4,27 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\projectComment;
 use Auth;
 use Zipper;
+use App\User;
 class projectController extends Controller
 {
 
     public function add(Request $request){
         $this->validate($request , [
             'title'=>"required",
-            'study'=>"required",
             'investment'=>"required",
             'budget'=>"required",
             'images.*'=>"required|image|mimes:jpeg,jpg,png,svg|max:10000",
-            'study.*'=>"required|mimes:docx,pdf,xls,txt",
+            'studies.*'=>"required|mimes:docx,pdf,xls,txt",
             'country' => 'required|exists:countries,id',
             'city' => 'required|exists:cities,id',
             'category'=>"required",
             'description'=>"required",
             'category'=>"required",
         ]);
+        // dd($request);
+        
 
-        try{
+        // try{
 
             $project_id = DB::table("projects")->insertGetId([
                 'title'=>$request->title,
@@ -33,12 +37,14 @@ class projectController extends Controller
                 'dep_id'=>$request->category,
                 'budget'=>$request->budget,
                 'investment'=>$request->investment,
+                'type' => session('type'),
                 'created_at'=> date('y-m-d H:i:s' ,time()),
                 'updated_at'=> date('y-m-d H:i:s' ,time()),
                 'auth'=>Auth::user()->id
             ]);
 
             if($project_id){
+                // dd($project_id);
                 $assets=[];
                 foreach ($request->file('images') as $image) {
                     $imgName    = $image->getClientOriginalName();
@@ -47,7 +53,8 @@ class projectController extends Controller
                     $assets[] = ['path'=>$imgUrl ,'type'=>0,'project_id'=>$project_id, 'created_at'=>date('y-m-d H:i:s' ,time()), 'updated_at'=>date('y-m-d H:i:s' ,time())];
                 }
 
-                foreach ($request->file('study') as $study) {
+
+                foreach ($request->file('studies') as $study) {
                     $fileName    = $study->getClientOriginalName();
                     $study->move(public_path('/projects/'.$request->title.'/') ,$fileName);
                     $fileUrl     = '/projects/'.$request->title.'/'.$fileName;
@@ -55,7 +62,14 @@ class projectController extends Controller
                 }
                     $done = DB::table('asset_projects')->insert($assets);
                     if($done){
-                        DB::table('projects')->where('project_id',$project_id)->update(['image'=>$assets[0]['path']]);
+                        DB::table('projects')->where('id',$project_id)->update(['image'=>$assets[0]['path']]);
+                        DB::table('invest_projects')->insert([
+                            'user_id'   => Auth::user()->id,
+                            'project_id'=> $project_id,
+                            'total_invest'=> $request->investment,
+                            'created_at'=> date('y-m-d H:i:s' ,time()),
+                            'updated_at'=> date('y-m-d H:i:s' ,time()),
+                        ]);
                         toastr()->success("Your project added successfully",'Add Project' );
                         return back();
                     }
@@ -64,17 +78,16 @@ class projectController extends Controller
                 return back();
             }
 
-        }catch (\Throwable $th) {
-            DB::rollback();
-            toastr()->error("Something went wrong !",'Add Project' );
-            return back();
-        }
+        // }catch (\Throwable $th) {
+        //     DB::rollback();
+        //     toastr()->error("Something went wrong !",'Add Project' );
+        //     return back();
+        // }
     }
 
 
     public function show($id){
 
-        
 
         $project = DB::select("select `projects`.*,
                     (SELECT SUM(`invest_projects`.total_invest) from `invest_projects`
@@ -136,6 +149,15 @@ class projectController extends Controller
         $added = DB::table('comment_projects')->insert($comment);
 
         if($added){
+            $users_ids = DB::select('SELECT `user_id` FROM `invest_projects` 
+                            WHERE `user_id` != '.Auth::user()->id.' AND `project_id`='.$request->project_id);
+            $ids=[];
+            foreach ($users_ids as $item) {
+                $ids[]= $item->user_id;
+            }
+            
+            $investedUsers = User::whereIn('id' ,$ids)->get();
+            Notification::send($investedUsers ,new projectComment(Auth::user()->id,Auth::user()->first_name,$request->project_id));
             return response()->json(['status'=>"added",'comment'=>$comment]);
         }
         
@@ -157,5 +179,57 @@ class projectController extends Controller
         if($liked){
             return response()->json(['status'=>"done"]);
         }
+    }
+
+    public function invest(Request $request){
+
+        $check = DB::table('invest_projects')
+                    ->where(['project_id'=>$request->project_id ,'user_id'=>Auth::user()->id])
+                    ->first();
+        if($check){
+            return response()->json(['status'=>'exists']);
+        }
+
+        $this->validate($request , [
+            'project_id' => 'required',
+            'amount'     => 'required'
+        ]);
+
+        $invested = DB::table("invest_projects")->insert([
+            'user_id'   => Auth::user()->id,
+            'project_id'=> $request->project_id,
+            'total_invest' => $request->amount,
+            'created_at'=>date('y-m-d H:i:s' ,time()),
+            'updated_at'=>date('y-m-d H:i:s' ,time())
+        ]);
+        
+        if($invested){            
+            return response()->json(['status'=>'done']);
+        }
+            return response()->json(['status'=>'fail']);
+
+    }
+
+    public function all(){
+        $departments = DB::table('departments')->get();
+       session()->put('type',Auth::user()->type);
+        $type = session()->get('type');
+        $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
+                     WHERE comment_projects.project_id = projects.id) AS comments,
+                     (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
+                     FROM projects WHERE `approved` = "1" AND `type` = '.'"'.$type.'"');
+                     
+        return view('projects.departments',['departments'=>$departments,'projects'=>$projects]);
+    }
+
+    public function depProjects($id){
+        $departments = DB::table('departments')->get();
+        $type = session()->get('type');
+        $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
+                     WHERE comment_projects.project_id = projects.id) AS comments,
+                     (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
+                     FROM projects WHERE `approved` = "1" AND `type` = '.'"'.$type.'" AND `dep_id` = '.'"'.$id.'"');
+        
+        return view('projects.departments',['departments'=>$departments,'projects'=>$projects]);
     }
 }

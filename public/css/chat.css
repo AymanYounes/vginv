@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 30px 0;
+    padding: 3px 0;
     border-bottom: 2px solid #f9f9f9;
 }
 .chat .item .top .headline {
@@ -89,7 +89,7 @@ ul li {
     float: right
 }
 .chat .item .bottom {
-    padding: 30px 0;
+   /* padding: 30px 0;*/
     border-top: 2px solid #f9f9f9;
 }
 .chat .item .bottom .form-control {
@@ -103,10 +103,10 @@ ul li {
     border: none;
     font-size: 16px;
     font-weight: 500;
-    border-radius: 6px;
+    border-radius: 0px;
 }
 .chat .item .bottom .prepend {
-    padding: 0 15px;
+    /* padding: 0 15px; */
     left: auto;
     right: 0;
 }
@@ -114,13 +114,31 @@ ul li {
     fill: #bdbac2;
 }
 .prepend {
-    position: absolute;
-    padding: 0 0 0 15px;
+    /* position: absolute; */
+    /* padding: 0px 0px 15px 25px; */
     /* top: 0; */
-    bottom: 43px;
+    /* bottom: 43px; */
     /* left: 0; */
-    margin-right: 4%;
+    /* margin-right: 4%; */
     line-height: 0;
     margin-bottom: 0!important;
-    background-color: transparent
+    background-color: transparent;
+}
+.prepend {
+    bottom: 5%;
+}
+.form-controls {
+    background: #f5f5f5;
+    color: #bdbac2;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 0px;
+    height: 55px;
+    resize: none;
+}
+.sent {
+    height: 420px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }

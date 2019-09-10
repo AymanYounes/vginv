@@ -1,0 +1,31 @@
+<!-- @if (count($poll)>0)
+        <div class="row mt-3 pt-4">
+          <h4 style="margin:15px">{{$poll[0]->question}}</h4>
+            <div class="col-md-12 col-sm-12">
+              <div>
+                @error("answer")
+                  <span class="error" role="alert">
+                      <strong>{{ $message }}</strong>
+                  </span>
+                @enderror
+                <form action="{{secure_asset('/poll/'/$poll[0]->question_id.'/answer)}}" method="POST">
+                  @csrf
+                  @foreach ($poll as $i=>$p)   
+                    <li class="li-edits"><span class="perc-back" style="width: @if(isset($pollVotes[$i]) && $pollVotes[$i]->answer_id == $p->id){{$pollVotes[$i]->count/$pollVotes[$i]->total*100}}% @else 0% @endif"></span>
+                      <input class="inputs" type="radio" name="answer" id="answer{{$p->id}}" value="{{$p->id}}">
+                      <label class="labels" for="answer{{$p->id}}">{{$p->answer}}</label>
+                      <span class="perc-number">
+                        @if(isset($pollVotes[$i]) && $pollVotes[$i]->answer_id == $p->id)
+                          {{number_format((float)$pollVotes[$i]->count/$pollVotes[$i]->total*100, 2, '.', '')}}%
+                        @else
+                          0%
+                        @endif
+                      </span>
+                    </li>
+                  @endforeach
+                    <button type="submit" class="buttons">@lang('main.submit')</button>
+                </form>
+              </div>
+          </div>
+        </div>
+      @endif -->

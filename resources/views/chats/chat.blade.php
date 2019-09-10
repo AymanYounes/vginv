@@ -1,10 +1,7 @@
 @extends('layout.master')
 @section('styles')
-<link rel="stylesheet" href="{{URL::asset('/css/chat.css')}}">
-<style>
-    {{-- .recever .bubble2{
-        background: #007bff !important;
-    } --}}
+<link rel="stylesheet" href="{{secure_asset('/css/chat.css')}}">
+{{-- <style>
     
     .msg-container{
         position: relative;
@@ -21,13 +18,15 @@
         font-size: 12px;
     }
     .sender .msg-time{
-        left: 78%;
+        /*left: 78%;*/
+    margin-top: 17px;
+    margin-left: 80%;
     }
     .message{
         background:#f5f5f5; 
         padding: 5px 10px;
         border-radius: 10px;   
-        float: left;
+       /* float: left;*/
         color:#bdbac2;
         margin-left: 10px;
         min-width: 150px;
@@ -39,7 +38,65 @@
         float: right !important;
     }
 
-</style>
+</style> --}}
+
+
+<style>
+        {{-- .recever .bubble2{
+            background: #007bff !important;
+        } --}}
+        
+        .msg-container{
+            //position: relative;
+            margin-bottom: 5px;
+           /* height:180px;*/
+        }
+        .sender{
+            padding: 10px;
+            margin-bottom: 0px;
+        }
+        .msg-time{
+            /* position: absolute; */
+            margin-top: 0px;
+            left: 10px;  
+            font-size: 12px;
+            margin-left: 2%;
+        }
+        .sender .msg-time{
+            /*left: 78%;*/
+        margin-top: 20px;
+        margin-left: 80%;
+        display: inline-block
+        }
+        .message{
+            background:#f5f5f5; 
+            padding: 5px 10px;
+            border-radius: 10px;   
+           /* float: left;*/
+            color:#000;
+            margin-left: 10px;
+            width:auto;
+            margin-top: 5px;
+         display: table;
+        }
+       
+        .sender .message{
+            background: #007bff; 
+            color: #FFF;
+            float: right !important;
+            margin-top:8px
+        }
+    
+        .sender .headline{
+            text-align:right
+        }
+        #chatAvatar{
+            border-raduis:50% !important;
+        }
+        .prepend{
+            bottom: 5%
+        }
+    </style>
 @endsection
 
 
@@ -58,7 +115,7 @@
                                         <div class="container">
                                             <div class="top">
                                                 <div class="headline">
-                                                    <img src="{{URL::asset($friend->image)}}" alt="avatar">
+                                                    <img src="{{secure_asset($friend->image)}}" alt="avatar">
                                                     <div class="content">
                                                         <h5>{{$friend->first_name ." ".$friend->last_name}}</h5>
                                                         <span>Away</span>
@@ -83,71 +140,15 @@
                                                                     </g>
                                                                 </svg></i></button>
                                                         <div class="dropdown-menu">
-                                                            <button type="button" class="dropdown-item"><svg
-                                                                    xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                    height="24" viewBox="0 0 24 24"
-                                                                    class="eva eva-video">
-                                                                    <g data-name="Layer 2">
-                                                                        <g data-name="video">
-                                                                            <rect width="24" height="24" opacity="0">
-                                                                            </rect>
-                                                                            <path
-                                                                                d="M21 7.15a1.7 1.7 0 0 0-1.85.3l-2.15 2V8a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h9a3 3 0 0 0 3-3v-1.45l2.16 2a1.74 1.74 0 0 0 1.16.45 1.68 1.68 0 0 0 .69-.15 1.6 1.6 0 0 0 1-1.48V8.63A1.6 1.6 0 0 0 21 7.15z">
-                                                                            </path>
-                                                                        </g>
-                                                                    </g>
-                                                                </svg>Video call</button>
-                                                            <button type="button" class="dropdown-item"><svg
-                                                                    xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                    height="24" viewBox="0 0 24 24"
-                                                                    class="eva eva-phone">
-                                                                    <g data-name="Layer 2">
-                                                                        <g data-name="phone">
-                                                                            <rect width="24" height="24" opacity="0">
-                                                                            </rect>
-                                                                            <path
-                                                                                d="M17.4 22A15.42 15.42 0 0 1 2 6.6 4.6 4.6 0 0 1 6.6 2a3.94 3.94 0 0 1 .77.07 3.79 3.79 0 0 1 .72.18 1 1 0 0 1 .65.75l1.37 6a1 1 0 0 1-.26.92c-.13.14-.14.15-1.37.79a9.91 9.91 0 0 0 4.87 4.89c.65-1.24.66-1.25.8-1.38a1 1 0 0 1 .92-.26l6 1.37a1 1 0 0 1 .72.65 4.34 4.34 0 0 1 .19.73 4.77 4.77 0 0 1 .06.76A4.6 4.6 0 0 1 17.4 22z">
-                                                                            </path>
-                                                                        </g>
-                                                                    </g>
-                                                                </svg>Voice call</button>
-                                                            <button type="button" class="dropdown-item"
-                                                                data-toggle="modal" data-target="#compose"><svg
-                                                                    xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                    height="24" viewBox="0 0 24 24"
-                                                                    class="eva eva-person-add">
-                                                                    <g data-name="Layer 2">
-                                                                        <g data-name="person-add">
-                                                                            <rect width="24" height="24" opacity="0">
-                                                                            </rect>
-                                                                            <path
-                                                                                d="M21 6h-1V5a1 1 0 0 0-2 0v1h-1a1 1 0 0 0 0 2h1v1a1 1 0 0 0 2 0V8h1a1 1 0 0 0 0-2z">
-                                                                            </path>
-                                                                            <path
-                                                                                d="M10 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4z">
-                                                                            </path>
-                                                                            <path
-                                                                                d="M16 21a1 1 0 0 0 1-1 7 7 0 0 0-14 0 1 1 0 0 0 1 1">
-                                                                            </path>
-                                                                        </g>
-                                                                    </g>
-                                                                </svg>Add people</button>
-                                                            <button type="button" class="dropdown-item"
-                                                                data-utility="open"><svg
-                                                                    xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                    height="24" viewBox="0 0 24 24"
-                                                                    class="eva eva-info">
-                                                                    <g data-name="Layer 2">
-                                                                        <g data-name="info">
-                                                                            <rect width="24" height="24"
-                                                                                transform="rotate(180 12 12)"
-                                                                                opacity="0"></rect>
-                                                                            <path
-                                                                                d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14a1 1 0 0 1-2 0v-5a1 1 0 0 1 2 0zm-1-7a1 1 0 1 1 1-1 1 1 0 0 1-1 1z">
-                                                                            </path>
-                                                                        </g>
-                                                                    </g>
-                                                                </svg>Information</button>
+                                                            <button type="button" class="dropdown-item choose">
+                                                                <i class="choose fas fa-paperclip"></i>Attach File
+                                                            </button>
+                                                            <button type="button" class="dropdown-item choose">
+                                                                <i class="choose fas fa-camera"></i> Image/Video
+                                                            </button>
+                                                            <button type="button" class="dropdown-item">
+                                                                <a href="tel:{{$friend->phone}}"><i class="fas fa-phone"></i> Phone Call</a>
+                                                            </button>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -157,24 +158,79 @@
                                     <div id="messages" class="sent">
                                         @foreach ($messages as $message)    
                                             <div class="msg-container @if ($message->sender_id == Auth::user()->id)sender @endif">
-                                                <div class="message">
-                                                        {{$message->message}}
-                                                </div>
-                                                <br>
-                                                <p class="msg-time" style="color: #bdbac2;"> {{date('j F h:i A',strtotime($message->created_at))}}</p>
+                                                    @if ($message->type =="text")
+                                                        <div class="message">
+                                                            {{$message->message}}
+                                                        </div>
+
+                                                    @elseif ($message->type == "image")
+                                                        <div class="message" style="padding:0 !important">
+                                                            <img width="150px" height="150px" src="{{secure_asset($message->message)}}">
+                                                        </div>   
+                                                    
+                                                    @elseif ($message->type == "application")
+                                                        <div class="message" style="background:none;padding:0 !important">
+                                                            <a href="{{secure_asset($message->message)}}">Attachment</a>
+                                                        </div>
+                                                        
+                                                    @elseif ($message->type == "video")
+                                                        <div class="message" style="background:none;padding:0 !important">
+                                                            <video controls width="250px" height="250px" src="{{secure_asset($message->message)}}">
+
+                                                            </video>
+                                                        </div>
+                                                    @elseif ($message->type == "audio")
+                                                        <div class="message" style="background:none;padding:0 !important">
+                                                            <audio controls width="250px" height="250px" src="{{secure_asset($message->message)}}"></)audio>
+                                                        </div>
+                                                    @endif
+                                          
+                                                <p class="msg-time mt-2 " style="color: #bdbac2;"> {{date('j F h:i A',strtotime($message->created_at))}}</p>
                                             </div>
                                         @endforeach
                                     </div>
-                                    <div class="container">
+
+                                    {{-- <div class="container">
                                             <div class="bottom">
                                                 <form id="fmsg">
                                                     @csrf
                                                     <input type="hidden" id="friend_id" name="friend_id" value="{{$friend->id}}">
+                                                    <input type="hidden" id="conv_id" name="conv_id" value="{{$conv_id}}">
                                                     <textarea class="form-control form-controls" name="message" id="message" placeholder="Type message..." rows="1"></textarea>
                                                     <button type="submit" class="btn prepend "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="eva eva-paper-plane"><g data-name="Layer 2"><g data-name="paper-plane"><rect width="24" height="24" opacity="0"></rect><path d="M21 4a1.31 1.31 0 0 0-.06-.27v-.09a1 1 0 0 0-.2-.3 1 1 0 0 0-.29-.19h-.09a.86.86 0 0 0-.31-.15H20a1 1 0 0 0-.3 0l-18 6a1 1 0 0 0 0 1.9l8.53 2.84 2.84 8.53a1 1 0 0 0 1.9 0l6-18A1 1 0 0 0 21 4zm-4.7 2.29l-5.57 5.57L5.16 10zM14 18.84l-1.86-5.57 5.57-5.57z"></path></g></g></svg></button>
                                                 </form>
+                                                <input id="attach" type="file" name="file" style="display: none">
+                                                <i id="recordButton" class="fas fa-microphone"></i>
                                             </div>
-                                        </div>
+                                        </div> --}}
+
+                                        <div class="container">
+                                        
+                                                <div class="row">
+                                                     <div class="col-md-10 col-sm-12" style="    padding-right: 0px;
+                                                     padding-left: 0px;">
+                                                                     <textarea class="form-control form-controls" name="message" id="message" placeholder="Type message..." rows="1"></textarea>
+                                                     </div>
+                                                      <div class="col-md-2 col-sm-12" style="    padding-right: 0px;
+                                                      padding-left: 0px;     background: #f5f5f5;" >
+                                                 <div class="bottom">
+                                                     <form id="fmsg">
+                                                         @csrf
+                                                         <!--<textarea class="form-control form-controls" name="message" id="message" placeholder="Type message..." rows="1"></textarea>-->
+                                                        <input type="hidden" id="friend_id" value="{{$friend->id}}">
+                                                        <input type="hidden" id="conv_id" value="{{$conv_id}}">
+                                                        
+                                                         <button type="submit" class="btn prepend ">
+                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="eva eva-paper-plane"><g data-name="Layer 2"><g data-name="paper-plane"><rect width="24" height="24" opacity="0"></rect><path d="M21 4a1.31 1.31 0 0 0-.06-.27v-.09a1 1 0 0 0-.2-.3 1 1 0 0 0-.29-.19h-.09a.86.86 0 0 0-.31-.15H20a1 1 0 0 0-.3 0l-18 6a1 1 0 0 0 0 1.9l8.53 2.84 2.84 8.53a1 1 0 0 0 1.9 0l6-18A1 1 0 0 0 21 4zm-4.7 2.29l-5.57 5.57L5.16 10zM14 18.84l-1.86-5.57 5.57-5.57z"></path></g></g></svg></button>
+                                                   <input id="attach" type="file" name="file" style="display: none">
+                                                 <i id="recordButton" class="fas fa-microphone microphonee"></i>
+                                                     </form>
+                                                 </div>
+                                               
+                                                 </div>
+                                             </div>
+                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -188,8 +244,11 @@
 
 
 @section('scripts')
-
-<script src="{{URL::asset('/js/chat.js')}}"></script>
+<script>
+        $(".sent").scrollTop($(".sent")[0].scrollHeight);
+        $("html").scrollTop($("html")[0].scrollHeight);
+        </script>
+<script src="{{asset('/js/chat.js')}}"></script>
 @endsection
 @endsection
 
