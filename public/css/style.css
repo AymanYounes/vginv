@@ -497,3 +497,25 @@ font-size: 20px;
 }
 /* end project home */
           /* end style home */
+
+
+
+
+
+
+
+
+
+.menu-active{
+    /*background: rgba(0,100,255,0.5);*/
+    background: rgba(0,0,0,0.2);
+}
+
+.menu-active a{
+    color: rgba(232, 232, 232,1);
+}
+
+
+.nearby-contct >.unread{
+    background: rgba(100,100,100,0.1);
+}

@@ -115,7 +115,7 @@ Route::group(['middleware' => ['auth','profile']], function () {
     Route::get('/user/friends', 'userController@friends');
     Route::get('/user/friends/{id}/add', 'userController@addFriend');
     Route::get('/user/friends/add/', 'userController@showUsers');
-    Route::get('/user/chats/', 'userController@chats');
+    Route::get('/user/all-chats/', 'userController@chats');
     Route::get('/vg/condition/', 'userController@condition');
     Route::get('/request/{req_id}/{sender_id}/{action}', 'userController@action');
 

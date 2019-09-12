@@ -46,7 +46,7 @@ $(document).ready(function(){
     }
 
     function getDepartments(){
-        request('get','/countries/'+country_id+'/cities',null)
+        request('get','/departments/',null)
             .then(res=>{
                 $(".deps").html('');
                 $(".deps").append("<option value='' selected>Choose...</option>");

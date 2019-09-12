@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\UserChat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Auth;
@@ -154,7 +155,67 @@ class userController extends Controller
     }
     
     public function chats(){
-        return view('chats.all');
+
+        $type = session()->get('type');
+        $users = UserChat::where('sender_id', Auth::user()->id)
+            ->orWhere('resever_id', Auth::user()->id)
+            ->get();
+
+        $usersArr = [];
+        foreach($users as $user){
+
+            $user_status_id = '';
+
+            if($user->sender_id == Auth::user()->id){
+                if(!array_key_exists($user->resever_id,$usersArr)){
+                    $user_status = 'resever_id';
+                }else{
+                    $user_status = '';
+                }
+            }else{
+                if(!array_key_exists($user->sender_id,$usersArr)){
+                    $user_status = 'sender_id';
+                }else{
+                    $user_status = '';
+                }
+            }
+
+            if($user_status != ''){
+                $user_info = User::find($user->$user_status);
+                if($user_status == 'sender_id') {
+                    $auth_status = 'resever_id';
+                }else {
+                    $auth_status = 'sender_id';
+                }
+
+                $user_id = $user_info->id;
+                $user_message = UserChat::where($user_status, $user_id)
+                    ->where($auth_status, Auth::user()->id)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+//dd($user_message,$user_id);
+                $usersArr[$user->$user_status]['info'] = $user_info;
+                $usersArr[$user->$user_status]['last_message'] = $user_message;
+                $usersArr[$user->$user_status]['read'] = $user_message->status;
+                $usersArr[$user->$user_status]['status'] = $user_status;
+                $usersArr[$user->$user_status]['lastUpdated'] = $user_message->created_at;
+            }
+
+
+        }
+
+
+        //sort array
+
+
+        usort($usersArr, function ($a, $b) {
+            return $a['lastUpdated'] <=> $b['lastUpdated'];
+        });
+
+        $usersArr = array_reverse($usersArr);
+//dd($usersArr);
+
+        return view('chats.all',['users'=>$usersArr]);
     }
     public function chat($id){
         return view('chats.chat');

@@ -24,6 +24,12 @@ return [
     'download'  =>'تحميل الملفات',
     'invite'    =>'دعوه',
     'report'    =>'ابلاغ',
+    'home'      =>'الرئيسية',
+    'categories'      =>'الأفسام',
+    'inbox'             =>'الرسائل الواردة',
+    'groupChat'         =>'المحادثة الجماعية',
+    'ToggleVG'          =>'التحويل إلى VG',
+    'ToggleHMG'         =>'التحويل إلى HMG',
     'labels'    =>[
         'choose'        =>'أختر',
         'title'         =>'العنوان',

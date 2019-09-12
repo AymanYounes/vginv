@@ -27,18 +27,30 @@
                   <div class="tab-pane active fade show" id="frends">
                     <ul class="nearby-contct">
                         @foreach($users as $user)
-                            <li>
+                            <li class="{{($user['status'] == 'sender_id' && $user['read'] == 0)?'unread':''}}">
                                 <div class="nearly-pepls">
                                     <figure>
-                                        <a href="{{URL::asset('/user/'.$user->id.'/profile')}}" title=""><img src="{{URL::asset($user->image)}}" alt="" width="70px" height="70px"></a>
+                                        <a href="{{URL::asset('/user/'.$user['info']->id.'/profile')}}" title=""><img src="{{URL::asset($user['info']->image)}}" alt="" width="70px" height="70px"></a>
                                     </figure>
                                     <div class="pepl-info">
-                                        <h4><a href="{{URL::asset('/user/'.$user->id.'/profile')}}" title="" class="font-weight-bold">{{$user->first_name . " ".$user->last_name}}</a></h4>
-                                        <p>{{$user->position}}</p>
-                        
+                                        <h4><a href="{{URL::asset('/user/'.$user['info']->id.'/profile')}}" title="" class="font-weight-bold">{{$user['info']->first_name . " ".$user['info']->last_name}}</a></h4>
+                                        {{--<p>{{$user['info']->position}}</p>--}}
+                                        @if($user['last_message']->type == 'text')
+                                            <p style="margin-bottom: 0;">{{ (strlen($user['last_message']->message)>25)? substr($user['last_message']->message,0,25).'...' : substr($user['last_message']->message,0,25)}}</p>
+                                        @elseif($user['last_message']->type == 'voice')
+                                            <p>@lang('chat.sentVoice')</p>
+                                        @elseif($user['last_message']->type == 'application')
+                                            <p>@lang('chat.sentAttachment')</p>
+                                        @elseif($user['last_message']->type == 'image')
+                                            <p>@lang('chat.sentImage')</p>
+                                        @endif
+                                        <span class="ml-3" style="color: #bdbac2;float: right"> {{(new Carbon\Carbon($user['last_message']->created_at))->diffForHumans()}}</span>
+
                                     </div>
                                     <div class="circule ml-3">
-                                    <a href="{{URL::asset('/user/chats/'.$user->id)}}"> <i class="fas fa-envelope text-white icon-contact"></i></a>
+                                        <a href="{{URL::asset('/user/chats/'.$user['info']->id)}}">
+                                            <i class="fas fa-envelope text-white icon-contact"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </li>

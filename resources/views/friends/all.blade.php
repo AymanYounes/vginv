@@ -36,9 +36,12 @@
                                         <a href="{{URL::asset('/user/'.$friend->id.'/profile')}}" title=""><img width="70px" height="70px" src="{{asset($friend->image)}}" alt=""></a>
                                     </figure>
                                     <div class="pepl-info">
-                                        <h4><a href="{{URL::asset('/user/'.$friend->id.'/profile')}}" title="" class="font-weight-bold">{{$friend->first_name." ".$friend->last_name}}</a></h4>
-                                        <p>{{$friend->description}}</p>
-                        
+                                        <h4>
+                                            <a href="{{URL::asset('/user/'.$friend->id.'/profile')}}" title="" class="font-weight-bold">{{$friend->first_name." ".$friend->last_name}}</a>
+                                            <small>({{getUserAddress($friend->city_id)->name}})</small>
+                                        </h4>
+                                        {{--<p>{{$friend->description}}</p>--}}
+                                        <p>{{$friend->position}}</p>
                                     </div>
                                     <!-- <i class=""></i> -->
                                     <div class="circule ml-3">

@@ -296,39 +296,56 @@
                     </form>
         </div>
         <!-- end search -->
-
             <div class="col-md-6 offset-md-4 col-sm-12 mr-3 text-center div-home-icon">
                 <div class="collecated   text-center" style="display: flex;">
-                    <div class="circule2 ml-3">
+                    <div class="circule2 ml-3 {{(\Request::segment(1)=='' )?"menu-active":""}}" data-toggle="tooltip" title="@lang('main.home')">
                         <a href="{{URL::asset('/')}}"> <i class="fas fa-home icon-contact2"></i></a></div>
-                    <div class="circule2 ml-3"> <a href="{{URL::asset('/projects/dep/all')}}"><i class="fas fa-tasks icon-contact2"></i></a></div>
-                    {{-- <div class="circule2 ml-3"> <a href="{{URL::asset('/user/chats')}}"> <i class="fas fa-envelope icon-contact2"></i></a></div> --}}
-                    <div class="circule2 ml-3"> <a href="{{URL::asset('/group/chat')}}"> <i class="fas fa-users icon-contact2"></i></a></div>
-                    <div class="circule2 ml-3"> <a href="{{URL::asset('/user/friends')}}"> <i class="fas fa-envelope icon-contact2"></i></a></div>
-                     <div class="circule2 ml-3"> <a href="{{URL::asset('/user/friends/add')}}"> <i class="fas fa-user-plus icon-contact2"></i></a></div> 
-                    <div class="circule2 ml-3"> <a href="{{URL::asset('/user/notifications')}}"><i class="fas fa-bell icon-contact2"></i><span class="badge">{{count(Auth::user()->unreadNotifications)}}</span></a></div>
+                    <div class="circule2 ml-3 {{(\Request::segment(1)=='projects' )?"menu-active":""}}" data-toggle="tooltip" title="@lang('main.categories')">
+                        <a href="{{URL::asset('/projects/dep/all')}}"><i class="fas fa-tasks icon-contact2"></i></a>
+                    </div>
+                    <div class="circule2 ml-3 {{((\Request::segment(1)=='user' && \Request::segment(2)=='all-chats' )||(\Request::segment(1)=='user' && \Request::segment(2)=='chats' ))?"menu-active":""}}" data-toggle="tooltip" title="@lang('main.inbox')">
+                        <a href="{{URL::asset('/user/all-chats')}}">
+                            <i class="fas fa-envelope icon-contact2"></i>
+                            <span class="badge">{{getUnreadMessages(Auth::user()->id)}}</span>
+                        </a>
+                    </div>
+                    <div class="circule2 ml-3 {{(\Request::segment(1)=='group' )?"menu-active":""}}" data-toggle="tooltip" title="@lang('main.groupChat')">
+                        <a href="{{URL::asset('/group/chat')}}"> <i class="fas fa-comments icon-contact2"></i></a>
+                    </div>
+                    <div class="circule2 ml-3 {{(\Request::segment(1)=='user' && \Request::segment(2)=='friends' && !\Request::segment(3) )?"menu-active":""}}" data-toggle="tooltip" title="@lang('main.friends')">
+                        <a href="{{URL::asset('/user/friends')}}"> <i class="fas fa-users icon-contact2"></i></a>
+                    </div>
+                    <div class="circule2 ml-3 {{(\Request::segment(1)=='user' && \Request::segment(2)=='friends' && \Request::segment(3)=='add' )?"menu-active":""}}" data-toggle="tooltip" title="@lang('main.addFriends')">
+                        <a href="{{URL::asset('/user/friends/add')}}"> <i class="fas fa-user-plus icon-contact2"></i></a>
+                    </div>
+                    <div class="circule2 ml-3 {{(\Request::segment(1)=='user' && \Request::segment(2)=='notifications' )?"menu-active":""}}" data-toggle="tooltip" title="@lang('main.settings.notify')">
+                        <a href="{{URL::asset('/user/notifications')}}">
+                            <i class="fas fa-bell icon-contact2"></i>
+                            <span class="badge">{{count(Auth::user()->unreadNotifications)}}</span>
+                        </a>
+                    </div>
                     @if(session('type') == 'vg' && Auth::user()->type =="vg")
                         <div class="circule2 ml-3">
                             <a href="http://vginv.com/questionhmg.html?{{Auth::user()->phone}}">
-                                <img height="40px" src="{{asset('/img/hmg.png')}}">
+                                <img height="40px" src="{{asset('/img/hmg.png')}}" data-toggle="tooltip" title="@lang('main.ToggleVG')">
                             </a>
                         </div>
                     @elseif(session('type') == 'vg' && Auth::user()->type =="hmg")
                         <div class="circule2 ml-3">
                             <a href="{{URL::asset('/type/toggle')}}">
-                                <img height="40px" src="{{asset('/img/hmg.png')}}">
+                                <img height="40px" src="{{asset('/img/hmg.png')}}"  data-toggle="tooltip" title="@lang('main.ToggleHMG')">
                             </a>
                         </div>
                     @elseif(Auth::user()->condition == 0)
                         <div class="circule2 ml-3">
-                            <a data-toggle="modal" data-target="#hmgModal" href="#">
-                                <img height="40px" src="{{asset('/img/vg.png')}}">
+                            <a data-toggle="modal" data-target="#hmgModal" href="#" >
+                                <img height="40px" src="{{asset('/img/vg.png')}}" data-toggle="tooltip" title="@lang('main.ToggleHMG')">
                             </a>
                         </div>
                     @else
                     <div class="circule2 ml-3">
                             <a href="{{URL::asset('/type/toggle')}}">
-                                <img height="40px" src="{{asset('/img/vg.png')}}">
+                                <img height="40px" src="{{asset('/img/vg.png')}}" data-toggle="tooltip" title="@lang('main.ToggleVG')">
                             </a>
                         </div>
                     @endif
@@ -407,6 +424,7 @@
 
     </script>
     <script src="{{asset('/js/ajaxFunsV1.js')}}"></script>
+    <script src="{{asset('/js/global.js')}}"></script>
     @yield('scripts')
     @toastr_js
     @toastr_render

@@ -1,9 +1,12 @@
 $(document).ready(function(){
 
+    var baseURL = $('#baseURL').val();
+
+
     function request( type ,url , data){
         return new Promise(function(resolve, reject) {
             $.ajax({
-                url:"https://vginv.com/app" +url,
+                url:baseURL +url,
                 type:type,
                 data:data,
                 processData: false,

@@ -24,6 +24,12 @@ return [
     'download'  =>'Download Files',
     'invite'    =>'Invite',
     'report'    =>'Report',
+    'home'      =>'Home',
+    'categories'        =>'Categories',
+    'inbox'             =>'Inbox',
+    'groupChat'         =>'Group chat',
+    'ToggleVG'          =>'Change to VG',
+    'ToggleHMG'         =>'Change to HMG',
     ''=>'',
     'labels'    =>[
         'choose'        =>'Choose',

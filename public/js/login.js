@@ -50,12 +50,7 @@ $(document).ready(function() {
     ////////////// edit Profile ////////////////
 
 
-    $(".custom-file-input").on('change',function (e) {
-        var path = this.value;
-        path = path.substring(12, path.length);
 
-        $(this).next('.custom-file-label').html(path);
-    })
 
 
 
