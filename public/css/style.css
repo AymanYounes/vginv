@@ -519,3 +519,15 @@ font-size: 20px;
 .nearby-contct >.unread{
     background: rgba(100,100,100,0.1);
 }
+
+
+.delete-message{
+    visibility: hidden;
+    color: #FFF;
+    /*display: none;*/
+}
+
+.message:hover .delete-message{
+    visibility: visible;
+    /*display: block;*/
+}

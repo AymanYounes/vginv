@@ -158,19 +158,38 @@
                                     <div id="messages" class="sent">
                                         @foreach ($messages as $message)    
                                             <div class="msg-container @if ($message->sender_id == Auth::user()->id)sender @endif">
+
+                                                @if($message->deleted_at != null)
+                                                    <div class="message">This message was deleted</div>
+                                                @else
                                                     @if ($message->type =="text")
                                                         <div class="message">
                                                             {{$message->message}}
+                                                            @if($message->sender_id == Auth::user()->id)
+                                                                <a href="javascript:void(0)" class="delete-message" data-delete="{{$message->id}}">
+                                                                    <i class="fa fa-times"></i>
+                                                                </a>
+                                                            @endif
                                                         </div>
 
                                                     @elseif ($message->type == "image")
                                                         <div class="message" style="padding:0 !important">
                                                             <img width="150px" height="150px" src="{{secure_asset($message->message)}}">
+                                                            @if($message->sender_id == Auth::user()->id)
+                                                                <a href="javascript:void(0)" class="delete-message" data-delete="{{$message->id}}">
+                                                                    <i class="fa fa-times"></i>
+                                                                </a>
+                                                            @endif
                                                         </div>   
                                                     
                                                     @elseif ($message->type == "application")
                                                         <div class="message" style="background:none;padding:0 !important">
                                                             <a href="{{secure_asset($message->message)}}">Attachment</a>
+                                                            @if($message->sender_id == Auth::user()->id)
+                                                                <a href="javascript:void(0)" class="delete-message" data-delete="{{$message->id}}">
+                                                                    <i class="fa fa-times"></i>
+                                                                </a>
+                                                            @endif
                                                         </div>
                                                         
                                                     @elseif ($message->type == "video")
@@ -178,14 +197,26 @@
                                                             <video controls width="250px" height="250px" src="{{secure_asset($message->message)}}">
 
                                                             </video>
+                                                            @if($message->sender_id == Auth::user()->id)
+                                                                <a href="javascript:void(0)" class="delete-message" data-delete="{{$message->id}}">
+                                                                    <i class="fa fa-times"></i>
+                                                                </a>
+                                                            @endif
                                                         </div>
                                                     @elseif ($message->type == "audio")
                                                         <div class="message" style="background:none;padding:0 !important">
                                                             <audio controls width="250px" height="250px" src="{{secure_asset($message->message)}}"></)audio>
+                                                            @if($message->sender_id == Auth::user()->id)
+                                                                <a href="javascript:void(0)" class="delete-message" data-delete="{{$message->id}}">
+                                                                    <i class="fa fa-times"></i>
+                                                                </a>
+                                                            @endif
                                                         </div>
                                                     @endif
-                                          
+                                                @endif
                                                 <p class="msg-time mt-2 " style="color: #bdbac2;"> {{date('j F h:i A',strtotime($message->created_at))}}</p>
+
+
                                             </div>
                                         @endforeach
                                     </div>
@@ -242,14 +273,15 @@
         </div>
     </section>
 
+@include('hiddens/chat')
+
+@endsection
+
 
 @section('scripts')
-<script>
+    <script>
         $(".sent").scrollTop($(".sent")[0].scrollHeight);
         $("html").scrollTop($("html")[0].scrollHeight);
-        </script>
-<script src="{{asset('/js/chat.js')}}"></script>
+    </script>
+    <script src="{{asset('/js/chat.js')}}"></script>
 @endsection
-@endsection
-
-

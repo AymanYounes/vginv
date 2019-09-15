@@ -129,6 +129,8 @@ Route::group(['middleware' => ['auth','profile']], function () {
     Route::post('/group/chat/send/file', 'chatController@GroupFile');
     Route::post('/single/chat/send/file', 'chatController@chatFile');
     Route::get('/group/chat/unread', 'chatController@unreadGroupMessages');
+//    Route::delete('/delete-case/{id}', ['uses' => 'CasesController@getDeleteCase', 'as' => 'casesGetDeleteCase']);
+    Route::get('/user/chats/delete-message/{message_id}', ['uses' => 'chatController@deleteMessage', 'as' => 'chatDeleteMessage']);
 
 
     //////////////////////// Chat /////////////////

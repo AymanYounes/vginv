@@ -140,4 +140,28 @@ $(document).ready(function(){
         }
     }
 
+    $(document).on('click', '.delete-message', function(e) {
+        e.preventDefault();
+        var result = confirm("are you sure to delete this message?");
+
+        if(result){
+
+            var message_id   = $(this).attr('data-delete');
+            var data = new FormData();
+            data.append('_token' , "{{ csrf_token() }}");
+            data.append('message_id', message_id);
+            request("get", '/user/chats/delete-message/'+message_id, data).then(res=>{
+                if(res['status']=="success"){
+                    $(this).parents('.msg-container').hide();
+                }
+            });
+        }
+
+    });
+
+
+
+
+
+
 });

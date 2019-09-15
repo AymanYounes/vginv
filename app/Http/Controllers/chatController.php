@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\UserChat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -167,6 +168,15 @@ class chatController extends Controller
                     where users.id !='.'"'.Auth::user()->id.'"'.' and users.type = '.'"'.$type.'"');
 
         return view('chats.all',['users'=>$users]);    
+    }
+
+
+    public function deleteMessage($message_id){
+
+        UserChat::find($message_id)->delete();
+        return response()->json([
+            'status' => 'success'
+        ]);
     }
 }
 
