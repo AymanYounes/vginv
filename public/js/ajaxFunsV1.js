@@ -181,9 +181,19 @@ $(document).ready(function(){
 /////////// invest //////////
 
 /////////// deps //////////
-    $("#deps").change(function(){
+//     $("#deps").change(function(){
+//         var dep_id =  $("#deps option:selected").val();
+//         window.location.href= baseURL +'/projects/dep/'+dep_id;
+//     });
+    $("#deps_status , #deps").change(function(){
+
         var dep_id =  $("#deps option:selected").val();
-        window.location.href='/app/projects/dep/'+dep_id;        
+        var deps_status =  $("#deps_status option:selected").val();
+        if(dep_id == 0){
+            window.location.href= baseURL +'/projects/dep/all?status='+deps_status;
+        }else {
+            window.location.href= baseURL +'/projects/dep/'+dep_id+'?status='+deps_status;
+        }
     });
 /////////// deps //////////
 })

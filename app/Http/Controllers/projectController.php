@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\projectComment;
 use Auth;
@@ -212,24 +213,43 @@ class projectController extends Controller
 
     public function all(){
         $departments = DB::table('departments')->get();
-       session()->put('type',Auth::user()->type);
+        $status = Input::get('status');
+
+        if(!session()->get('type')){
+            session()->put('type',Auth::user()->type);
+        }
         $type = session()->get('type');
+
+        if($status != '') {
+            $status_sql = 'AND `status` ='.'"'.$status.'"';
+        }else{
+            $status_sql = '';
+        }
         $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
                      WHERE comment_projects.project_id = projects.id) AS comments,
                      (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
-                     FROM projects WHERE `approved` = "1" AND `type` = '.'"'.$type.'"');
-                     
-        return view('projects.departments',['departments'=>$departments,'projects'=>$projects]);
+                     FROM projects WHERE `approved` = "1" AND `type` = ' . '"' . $type . '" '.$status_sql );
+
+
+        return view('projects.departments',['status'=> $status,'departments'=>$departments,'projects'=>$projects]);
     }
 
     public function depProjects($id){
+
+        $status = Input::get('status');
         $departments = DB::table('departments')->get();
         $type = session()->get('type');
-        $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
+        if($status != '') {
+            $status_sql = 'AND `status` ='.'"'.$status.'"';
+        }else{
+            $status_sql = '';
+        }
+            $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
                      WHERE comment_projects.project_id = projects.id) AS comments,
                      (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
-                     FROM projects WHERE `approved` = "1" AND `type` = '.'"'.$type.'" AND `dep_id` = '.'"'.$id.'"');
-        
-        return view('projects.departments',['departments'=>$departments,'projects'=>$projects]);
+                     FROM projects WHERE `approved` = "1" AND `type` = '.'"'.$type.'" AND `dep_id` = '.'"'.$id.'"'. $status_sql);
+
+
+        return view('projects.departments',['department_id'=> $id,'status'=> $status,'departments'=>$departments,'projects'=>$projects]);
     }
 }

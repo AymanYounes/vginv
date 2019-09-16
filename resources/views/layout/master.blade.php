@@ -336,10 +336,10 @@
                                 <img height="40px" src="{{asset('/img/hmg.png')}}"  data-toggle="tooltip" title="@lang('main.ToggleHMG')">
                             </a>
                         </div>
-                    @elseif(Auth::user()->condition == 0)
+                        @elseif(Auth::user()->condition == 0)
                         <div class="circule2 ml-3">
                             <a data-toggle="modal" data-target="#hmgModal" href="#" >
-                                <img height="40px" src="{{asset('/img/vg.png')}}" data-toggle="tooltip" title="@lang('main.ToggleHMG')">
+                                <img height="40px" src="{{asset('/img/vg.png')}}" data-toggle="tooltip" title="@lang('main.ToggleVG')">
                             </a>
                         </div>
                     @else
@@ -349,7 +349,6 @@
                             </a>
                         </div>
                     @endif
-                    
                 </div>
             </div>
         </div>

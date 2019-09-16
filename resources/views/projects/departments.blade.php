@@ -59,18 +59,27 @@
     <div class="container">
         <!-- filter project -->
         <div class="row">
-            <div class="col-md-6 col-sm-12 offset-md-3 mt-3 pt-3">
+            <div class="col-md-4 col-sm-12 offset-md-3 mt-3 pt-3">
             
                 <select id="deps" class="custom-select deps" style="    border: 0px solid #CCC;">
-                    <option selected> Choose Your Favourite Project</option>
+                    <option selected value="0"> @lang('projects.chooseFavProject')</option>
                     @foreach ($departments as $dep)
                         @if (session('locale')=="ar")
-                            <option value="{{$dep->id}}">{{$dep->dep_ar}}</option>
+                            <option {{(isset($department_id) && $dep->id == $department_id)?'selected':'' }} value="{{$dep->id}}">{{$dep->dep_ar}}</option>
                         @else
-                            <option value="{{$dep->id}}">{{$dep->dep_en}}</option>
+                            <option {{(isset($department_id) && $dep->id == $department_id)?'selected':'' }} value="{{$dep->id}}">{{$dep->dep_en}}</option>
                         @endif
                     @endforeach
                 </select>
+            </div>
+                <div class="col-md-2 col-sm-12  mt-3 pt-3">
+                <select id="deps_status" class="custom-select deps" style="    border: 0px solid #CCC;">
+                    <option value="" selected> @lang('projects.allStatus') </option>
+                        <option value="1" {{(isset($status) && $status == 1)?'selected':'' }}>@lang('projects.uncompleted')</option>
+                        <option value="0" {{(isset($status) && $status == 0)?'selected':'' }}>@lang('projects.completed')</option>
+
+                </select>
+
             </div>
         </div>
         <!-- end filter project -->
