@@ -8,17 +8,20 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\projectComment;
 use Auth;
+use Illuminate\Support\Facades\Validator;
 use Zipper;
 use App\User;
 class projectController extends Controller
 {
 
     public function add(Request $request){
-        $this->validate($request , [
+
+        $validator = Validator::make($request->all(), [
             'title'=>"required",
+            'provider'=>"required",
             'investment'=>"required",
             'budget'=>"required",
-            'images.*'=>"required|image|mimes:jpeg,jpg,png,svg|max:10000",
+            'images.*'=>"required|image|mimes:jpeg,jpg,webp,png,svg|max:10000",
             'studies.*'=>"required|mimes:docx,pdf,xls,txt",
             'country' => 'required|exists:countries,id',
             'city' => 'required|exists:cities,id',
@@ -26,19 +29,49 @@ class projectController extends Controller
             'description'=>"required",
             'category'=>"required",
         ]);
-        // dd($request);
+
+        if ($validator->fails()) {
+            foreach($validator->messages() as $message){
+                echo $message;
+            }
+//            dd($validator);
+            return redirect('/')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+//        dd($request->all());
+
+//        $this->validate($request , [
+//            'title'=>"required",
+//            'investment'=>"required",
+//            'budget'=>"required",
+//            'images.*'=>"required|image|mimes:jpeg,jpg,png,svg|max:10000",
+//            'studies.*'=>"required|mimes:docx,pdf,xls,txt",
+//            'country' => 'required|exists:countries,id',
+//            'city' => 'required|exists:cities,id',
+//            'category'=>"required",
+//            'description'=>"required",
+//            'category'=>"required",
+//        ]);
         
 
         // try{
+        $period = '';
+        if($request->period){
+            $period = $request->period;
+        }
 
             $project_id = DB::table("projects")->insertGetId([
                 'title'=>$request->title,
+                'provider'=>$request->provider,
                 'description'=>$request->description,
                 'location'=>$request->city,
                 'dep_id'=>$request->category,
                 'budget'=>$request->budget,
                 'investment'=>$request->investment,
                 'type' => session('type'),
+                'period' => $period,
                 'created_at'=> date('y-m-d H:i:s' ,time()),
                 'updated_at'=> date('y-m-d H:i:s' ,time()),
                 'auth'=>Auth::user()->id
@@ -228,7 +261,10 @@ class projectController extends Controller
         $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
                      WHERE comment_projects.project_id = projects.id) AS comments,
                      (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
-                     FROM projects WHERE `approved` = "1" AND `type` = ' . '"' . $type . '" '.$status_sql );
+                     FROM projects 
+                     WHERE `approved` = "1" 
+                     AND `type` = ' . '"' . $type . '" '.$status_sql.' 
+                     order by `created_at` DESC' );
 
 
         return view('projects.departments',['status'=> $status,'departments'=>$departments,'projects'=>$projects]);
@@ -247,7 +283,11 @@ class projectController extends Controller
             $projects = DB::select('SELECT projects.* , (SELECT COUNT(id) FROM comment_projects
                      WHERE comment_projects.project_id = projects.id) AS comments,
                      (SELECT COUNT(id) FROM like_projects WHERE like_projects.project_id = projects.id) AS likes
-                     FROM projects WHERE `approved` = "1" AND `type` = '.'"'.$type.'" AND `dep_id` = '.'"'.$id.'"'. $status_sql);
+                     FROM projects 
+                     WHERE `approved` = "1" 
+                     AND `type` = '.'"'.$type.'" 
+                     AND `dep_id` = '.'"'.$id.'"'. $status_sql.' 
+                     order by `created_at` DESC');
 
 
         return view('projects.departments',['department_id'=> $id,'status'=> $status,'departments'=>$departments,'projects'=>$projects]);

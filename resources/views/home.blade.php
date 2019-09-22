@@ -1,7 +1,7 @@
 @extends('layout.master')
 @section('styles')
 {{-- <link rel="stylesheet" href="/app/public/css/style.css">--}}
-<link rel="stylesheet" href="{{secure_asset('/css/media/home.css')}}"> 
+<link rel="stylesheet" href="{{secure_asset('/css/media/home.css')}}">
 <style>
   .proposed {
     height: 350px;
@@ -93,10 +93,27 @@ li.correct .inputs[type=radio]:checked + .labels:before {
   float: right;
 }
 
+
+
+@if(session("locale") == 'ar')
+    /* RTL */
+
+    .form-group{
+        direction: rtl;
+        text-align: right;
+    }
+.custom-file-label::after {
+    left: 0;
+    right: auto;
+    border-left-width: 0;
+    border-right: inherit;
+}
+@endif
+
 </style>
 @endsection
 @section('content')
-    
+
 
 <!-- Modal -->
   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
@@ -181,7 +198,7 @@ aria-labelledby="exampleModalLabel" aria-hidden="true"  data-backdrop="static"  
             <form method="POST" action="{{URL::asset('/user/add/project')}}" enctype="multipart/form-data">
               @csrf
                 <div class="form-group">
-                    <label for="recipient-name" class="col-form-label text-dark">@lang('main.labels.title') *</label>
+                    <label for="recipient-name" class="col-form-label text-dark">@lang('projects.addProjectTitle') *</label>
                     <input type="text" class="form-control" name="title" required id="recipient-name">
                     @error('title')
                         <span class="error" role="alert">
@@ -189,19 +206,37 @@ aria-labelledby="exampleModalLabel" aria-hidden="true"  data-backdrop="static"  
                         </span>
                     @enderror
                 </div>
+
+
                 <div class="form-group">
-                        <div class="input-group mb-3">
-                            <div class="custom-file">                                       
-                              <input type="file" class="custom-file-input" required name="images[]" multiple id="inputGroupFile02">
-                              <label class="custom-file-label" for="inputGroupFile02">@lang('main.labels.images')</label>
-                            </div>
-                            @error('images')
-                                <span class="error" role="alert">
+                    <label for="recipient-name" class="col-form-label text-dark">@lang('projects.provider')</label>
+                    <select id="provider" name="provider" required class="form-control provider border-inbut @error('country') is-invalid @enderror" value="{{ old('provider') }}">
+                        <option value="1" selected> @lang('projects.providerOption1')</option>
+                        <option value="2" > @lang('projects.providerOption2')</option>
+                        <option value="3" > @lang('projects.providerOption3')</option>
+                    </select>
+                    @error('provider')
+                    <span class="error" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
-                            @enderror
-                          </div>
+                    @enderror
+                </div>
+
+
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" required name="images[]" multiple id="inputGroupFile02">
+                            <label class="custom-file-label" for="inputGroupFile02">@lang('main.labels.images')</label>
+                        </div>
+                        @error('images')
+                        <span class="error" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                        @enderror
                     </div>
+                </div>
+
                     <div class="form-group">
                             <div class="input-group mb-3">
                                 <div class="custom-file">
@@ -224,6 +259,22 @@ aria-labelledby="exampleModalLabel" aria-hidden="true"  data-backdrop="static"  
                                     </span>
                                 @enderror
                             </div>  --}}
+                            @if (session("type")=="hmg")
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label text-dark">@lang('projects.period')</label>
+                                <select id="period" name="period" required class="form-control period border-inbut @error('country') is-invalid @enderror" value="{{ old('period') }}">
+{{--                                    <option selected>@lang('projects.period')</option>--}}
+                                    <option value="30" selected>30 @lang('projects.days')</option>
+                                    <option value="60">60 @lang('projects.days')</option>
+                                    <option value="90">90 @lang('projects.days')</option>
+                                </select>
+                                @error('period')
+                                <span class="error" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                            @endif
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label text-dark">@lang('main.labels.investments')</label>
                                 <input type="text" class="form-control" name="investment" required id="recipient-name">

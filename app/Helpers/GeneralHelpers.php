@@ -31,3 +31,14 @@ if (! function_exists('getUnreadMessages')) {
 
 
 }
+
+
+if (! function_exists('getProjectProvider')) {
+    function getProjectProvider($id)
+    {
+          return trans('projects.providerOption'. $id);
+
+    }
+
+
+}
